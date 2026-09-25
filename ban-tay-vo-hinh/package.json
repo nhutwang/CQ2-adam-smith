@@ -1,0 +1,19 @@
+{
+  "name": "ban-tay-vo-hinh-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "8.3.0"
+  },
+  "dependencies": {
+    "animejs": "^4.5.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "three": "^0.186.1"
+  }
+}
