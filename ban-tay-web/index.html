@@ -1,29 +1,22 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="night">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090c12">
+<meta name="theme-color" content="#06080c">
 <title>Bàn tay vô hình hay bàn tay hữu hình? — Báo cáo thảo luận CQ2</title>
 <meta name="description" content="Báo cáo thảo luận CQ2 — Học phần Kinh tế chính trị Mác – Lênin (SS008), Nhóm 2. Nền kinh tế thị trường hoàn hảo nên vận hành bởi bàn tay vô hình hay bàn tay hữu hình?">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%230a0c10'/%3E%3Cpath d='M20 6a14 14 0 000 28z' fill='%23d7a84c'/%3E%3Cpath d='M20 6a14 14 0 010 28z' fill='%235f90b8'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap">
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/",
-    "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js",
-    "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/"
+    "three": "./vendor/three/build/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
   }
 }
 </script>
-<link rel="stylesheet" href="css/style.css?v=20260928-quiz-1">
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.8/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/style.css?v=20260929-b">
 <noscript><style>.reveal{opacity:1!important;transform:none!important;filter:none!important}.reveal *{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
@@ -35,8 +28,8 @@
 <header class="site-header">
  <a class="site-header__mark" href="#hero" aria-label="Về đầu trang">
    <svg class="glyph" viewBox="0 0 40 40" aria-hidden="true">
-     <path d="M20 6a14 14 0 000 28z" fill="var(--gold-soft)"/>
-     <path d="M20 6a14 14 0 010 28z" fill="var(--steel-soft)"/>
+     <path class="g-inv" d="M20 6a14 14 0 000 28z"/>
+     <path class="g-vis" d="M20 6a14 14 0 010 28z"/>
    </svg>
    <b>Hai bàn tay</b><span>&nbsp;· CQ2, SS008</span>
  </a>
@@ -49,9 +42,9 @@
 <nav class="dotnav" aria-label="Điều hướng các mục">
  <a class="dotnav__item" data-target="s1" href="#s1"><span class="dotnav__dot"></span><span class="dotnav__label">1 · Đặt vấn đề</span></a>
  <a class="dotnav__item" data-target="s2" href="#s2"><span class="dotnav__dot"></span><span class="dotnav__label">2 · Chuyện phiên chợ</span></a>
- <a class="dotnav__item" data-target="s3" href="#s3" data-hand="gold"><span class="dotnav__dot"></span><span class="dotnav__label">3 · Bàn tay vô hình</span></a>
- <a class="dotnav__item" data-target="s4" href="#s4" data-hand="gold"><span class="dotnav__dot"></span><span class="dotnav__label">4 · Ba chủ thể</span></a>
- <a class="dotnav__item" data-target="s5" href="#s5" data-hand="steel"><span class="dotnav__dot"></span><span class="dotnav__label">5 · Bàn tay hữu hình</span></a>
+ <a class="dotnav__item" data-target="s3" href="#s3" data-hand="inv"><span class="dotnav__dot"></span><span class="dotnav__label">3 · Bàn tay vô hình</span></a>
+ <a class="dotnav__item" data-target="s4" href="#s4" data-hand="inv"><span class="dotnav__dot"></span><span class="dotnav__label">4 · Ba chủ thể</span></a>
+ <a class="dotnav__item" data-target="s5" href="#s5" data-hand="vis"><span class="dotnav__dot"></span><span class="dotnav__label">5 · Bàn tay hữu hình</span></a>
  <a class="dotnav__item" data-target="s6" href="#s6"><span class="dotnav__dot"></span><span class="dotnav__label">6 · Liên hệ thực tiễn</span></a>
  <a class="dotnav__item" data-target="s7" href="#s7"><span class="dotnav__dot"></span><span class="dotnav__label">7 · Trả lời CQ2</span></a>
  <a class="dotnav__item" data-target="s8" href="#s8"><span class="dotnav__dot"></span><span class="dotnav__label">8 · Phạm vi &amp; tài liệu</span></a>
@@ -67,9 +60,9 @@
    <ul class="mobile-sheet__list">
      <li><a data-target="s1" href="#s1"><span class="dotnav__dot"></span>1. Đặt vấn đề</a></li>
      <li><a data-target="s2" href="#s2"><span class="dotnav__dot"></span>2. Câu chuyện phiên chợ Hòa Thị</a></li>
-     <li><a data-target="s3" href="#s3"><span class="dotnav__dot"></span>3. Bàn tay vô hình trong lý luận</a></li>
-     <li><a data-target="s4" href="#s4"><span class="dotnav__dot"></span>4. Ba chủ thể của bàn tay vô hình</a></li>
-     <li><a data-target="s5" href="#s5"><span class="dotnav__dot"></span>5. Bàn tay hữu hình</a></li>
+     <li><a data-target="s3" href="#s3" data-hand="inv"><span class="dotnav__dot"></span>3. Bàn tay vô hình trong lý luận</a></li>
+     <li><a data-target="s4" href="#s4" data-hand="inv"><span class="dotnav__dot"></span>4. Ba chủ thể của bàn tay vô hình</a></li>
+     <li><a data-target="s5" href="#s5" data-hand="vis"><span class="dotnav__dot"></span>5. Bàn tay hữu hình</a></li>
      <li><a data-target="s6" href="#s6"><span class="dotnav__dot"></span>6. Liên hệ thực tiễn</a></li>
      <li><a data-target="s7" href="#s7"><span class="dotnav__dot"></span>7. Trả lời CQ2</a></li>
      <li><a data-target="s8" href="#s8"><span class="dotnav__dot"></span>8. Phạm vi, giới hạn &amp; tài liệu tham khảo</a></li>
@@ -81,22 +74,21 @@
 <main>
  
 <!-- ============================== HERO ============================== -->
-<section class="hero" id="hero">
- <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
- <div class="hero__veil" aria-hidden="true"></div>
+<section class="hero" id="hero" data-theme="night" data-scene="hero">
  <p class="hero__eyebrow"><b>Báo cáo thảo luận CQ2</b><br>Học phần Kinh tế chính trị Mác – Lênin (SS008) — Nhóm 2</p>
- <h1 class="hero__title">Nền kinh tế thị trường hoàn hảo nên được vận hành bởi <span class="accent-gold">bàn tay vô hình</span> hay <span class="accent-steel">bàn tay hữu hình</span>?</h1>
+ <h1 class="hero__title">Nền kinh tế thị trường hoàn hảo nên được vận hành bởi <span class="hand-inv">bàn tay vô hình</span> hay <span class="hand-vis">bàn tay hữu hình</span>?</h1>
  <p class="hero__sub">Luận điểm của nhóm: thị trường quyết định việc phân bổ nguồn lực qua giá cả, cung – cầu và cạnh tranh, trong khuôn khổ luật chơi và việc khắc phục khuyết tật do bàn tay hữu hình đảm nhiệm.</p>
  <div class="hero__meta">
    <span><strong>Phạm vi giáo trình:</strong> Chương 2, mục II.2 và mục III (tr.61–81)</span>
  </div>
  <div class="hero__cue" aria-hidden="true">
    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <span>Cuộn để bắt đầu</span>
  </div>
 </section>
  
 <!-- ============================== MỤC 1 ============================== -->
-<section class="section" id="s1">
+<section class="section" id="s1" data-theme="night">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">01</span>
@@ -127,7 +119,7 @@
 </section>
  
 <!-- ============================== MỤC 2 ============================== -->
-<section class="section section--panel" id="s2">
+<section class="section" id="s2" data-theme="dusk">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">02</span>
@@ -191,7 +183,7 @@
 </section>
  
 <!-- ============================== MỤC 3 ============================== -->
-<section class="section" id="s3">
+<section class="section" id="s3" data-theme="night" data-hand="inv">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">03</span>
@@ -240,7 +232,7 @@
      <li><b>Thị trường</b> đóng vai trò quyết định trong phân bổ các nguồn lực xã hội</li>
      <li><b>Giá cả</b> do thị trường quyết định</li>
      <li><b>Lợi nhuận</b> là động lực của các chủ thể kinh doanh</li>
-     <li class="is-state"><b>Nhà nước</b> thực hiện khắc phục những khuyết tật của thị trường</li>
+     <li class="is-vis"><b>Nhà nước</b> thực hiện khắc phục những khuyết tật của thị trường</li>
      <li><b>Thị trường</b> gắn với nền kinh tế mở</li>
    </ul>
  
@@ -248,7 +240,7 @@
      <p>Đặc trưng thứ năm cho thấy ngay trong định nghĩa, giáo trình không xem Nhà nước là ngoại lệ: kinh tế thị trường vận hành bằng thị trường nhưng được sửa lỗi bằng Nhà nước. Giáo trình cũng lưu ý đây là những đặc trưng phổ biến; tùy điều kiện lịch sử, chính trị và xã hội, mỗi quốc gia hình thành mô hình kinh tế thị trường riêng. Bảng 1 đối chiếu ưu thế và khuyết tật với câu chuyện.</p>
    </div>
 
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table">
        <caption>Bảng 1 — Ưu thế và khuyết tật của kinh tế thị trường</caption>
        <colgroup><col style="width:15%"><col style="width:41%"><col style="width:44%"></colgroup>
@@ -256,9 +248,9 @@
          <tr><th class="tag-cell">Nhóm</th><th>Nội dung theo giáo trình</th><th>Biểu hiện trong làng Hòa Thị</th></tr>
        </thead>
        <tbody>
-         <tr><td class="tag-cell"><span class="tag tag--gold">Ưu thế</span></td><td>Tạo động lực mạnh cho các chủ thể kinh tế</td><td>Bà Tư mở lò và cải tiến vì lợi nhuận (Hồi 1)</td></tr>
-         <tr><td class="tag-cell"><span class="tag tag--gold">Ưu thế</span></td><td>Phát huy tiềm năng, lợi thế của mọi chủ thể</td><td>Người khéo nướng bánh mở lò, người giỏi cấy chuyển sang trồng gạo</td></tr>
-         <tr><td class="tag-cell"><span class="tag tag--gold">Ưu thế</span></td><td>Thỏa mãn tối đa nhu cầu, thúc đẩy tiến bộ xã hội</td><td>Bánh nhiều loại hơn, chất lượng tăng, giá dịu lại</td></tr>
+         <tr><td class="tag-cell"><span class="tag tag--inv">Ưu thế</span></td><td>Tạo động lực mạnh cho các chủ thể kinh tế</td><td>Bà Tư mở lò và cải tiến vì lợi nhuận (Hồi 1)</td></tr>
+         <tr><td class="tag-cell"><span class="tag tag--inv">Ưu thế</span></td><td>Phát huy tiềm năng, lợi thế của mọi chủ thể</td><td>Người khéo nướng bánh mở lò, người giỏi cấy chuyển sang trồng gạo</td></tr>
+         <tr><td class="tag-cell"><span class="tag tag--inv">Ưu thế</span></td><td>Thỏa mãn tối đa nhu cầu, thúc đẩy tiến bộ xã hội</td><td>Bánh nhiều loại hơn, chất lượng tăng, giá dịu lại</td></tr>
          <tr><td class="tag-cell"><span class="tag tag--danger">Khuyết tật</span></td><td>Ẩn chứa rủi ro khủng hoảng</td><td>Một mùa dư bánh khiến cả làng lỗ (Hồi 2)</td></tr>
          <tr><td class="tag-cell"><span class="tag tag--danger">Khuyết tật</span></td><td>Tài nguyên cạn kiệt, môi trường suy thoái</td><td>Lò bánh xả nước thải xuống sông</td></tr>
          <tr><td class="tag-cell"><span class="tag tag--danger">Khuyết tật</span></td><td>Phân hóa xã hội sâu sắc</td><td>Nhà giàu ngày một giàu</td></tr>
@@ -270,7 +262,7 @@
  
    <h3 class="subhead reveal">3.3. Các quy luật chủ yếu của thị trường</h3>
  
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table" style="min-width:720px;">
        <caption>Bảng 2 — Bốn quy luật và biểu hiện trong câu chuyện</caption>
        <colgroup><col style="width:15%"><col style="width:47%"><col style="width:38%"></colgroup>
@@ -302,7 +294,7 @@
      </table>
    </div>
  
-   <div class="prose reveal">
+   <div class="prose reveal" id="s3-laws">
      <p>Trong bốn quy luật, quy luật giá trị là quy luật kinh tế cơ bản của sản xuất và trao đổi hàng hóa, và giáo trình nêu ba tác động của nó. Tác động thứ nhất là điều tiết sản xuất và lưu thông hàng hóa: nguồn lực tự dịch chuyển vào ngành có giá cả cao hơn giá trị và rút khỏi ngành có giá cả thấp hơn giá trị, còn hàng hóa đi từ nơi giá thấp đến nơi giá cao. Tác động thứ hai là kích thích cải tiến kỹ thuật, hợp lý hóa sản xuất và tăng năng suất lao động, vì người có hao phí lao động cá biệt thấp hơn mức xã hội cần thiết sẽ thu lợi nhiều hơn. Tác động thứ ba là phân hóa người sản xuất: người nhạy bén, chi phí thấp tích lũy và giàu lên, người chi phí cao thua lỗ và bị đào thải. Hai tác động đầu chính là Hồi 1 của câu chuyện, khi làng có thêm lò bánh và các lò thi nhau cải tiến. Tác động thứ ba là cảnh "nhà giàu ngày một giàu" ở Hồi 2, và đó là lý do thứ hai trong luận điểm ở mục 1: phân hóa sinh ra từ chính cơ chế cạnh tranh, nên thị trường không tự thu hẹp được nó.</p>
    </div>
 
@@ -343,12 +335,12 @@
 </section>
  
 <!-- ============================== MỤC 4 ============================== -->
-<section class="section section--panel" id="s4">
+<section class="section" id="s4" data-theme="night" data-hand="inv">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">04</span>
      <div class="section__titles">
-       <span class="section__kicker is-gold">Giáo trình, mục III.1 – III.3</span>
+       <span class="section__kicker">Giáo trình, mục III.1 – III.3</span>
        <h2 class="section__title">Ba chủ thể của bàn tay vô hình</h2>
      </div>
    </div>
@@ -378,7 +370,7 @@
      </div>
    </div>
  
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table" style="min-width:760px;">
        <caption>Bảng 3 — Đóng góp, rủi ro và nhu cầu can thiệp của ba chủ thể</caption>
        <colgroup><col style="width:19%"><col style="width:27%"><col style="width:26%"><col style="width:28%"></colgroup>
@@ -415,12 +407,12 @@
 </section>
  
 <!-- ============================== MỤC 5 ============================== -->
-<section class="section" id="s5">
+<section class="section" id="s5" data-theme="paper" data-hand="vis">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">05</span>
      <div class="section__titles">
-       <span class="section__kicker is-steel">Giáo trình, mục III.4</span>
+       <span class="section__kicker">Giáo trình, mục III.4</span>
        <h2 class="section__title">Bàn tay hữu hình: Nhà nước khi thị trường thất bại</h2>
      </div>
    </div>
@@ -430,7 +422,7 @@
      <p>Theo giáo trình, Nhà nước có vai trò quản lý nhà nước về kinh tế và khắc phục những khuyết tật của thị trường. Nhà nước tạo môi trường thuận lợi để các chủ thể phát huy sáng tạo, loại bỏ những rào cản không phù hợp với sản xuất kinh doanh, và dùng hệ thống pháp luật, chính sách cùng các công cụ kinh tế để tác động vào nền kinh tế, làm thị trường vận hành hiệu quả hơn. Giáo trình nhấn mạnh mức độ can thiệp có thể khác nhau giữa các quốc gia và các thời kỳ, nhưng vai trò kinh tế của Nhà nước là không thể thiếu. Ở Việt Nam, đặc trưng này được xác lập thành kinh tế thị trường định hướng xã hội chủ nghĩa, nội dung thuộc Chương 5 nên báo cáo không đi sâu. Trong câu chuyện, trưởng làng đặt luật vệ sinh và cân đo, phạt gian thương, mở đường, lập quỹ giúp hộ nghèo và giữ tiền ổn định: chợ lành lại. Nhưng khi ông ấn định giá bánh cho mọi lò, không ai muốn làm bánh nữa. Giá bánh là tín hiệu để lò biết nên sản xuất thêm hay bớt; ấn định giá là gỡ mất tín hiệu ấy nên bánh khan. Ranh giới hợp lý là sửa luật chơi, không thay người chơi.</p>
    </div>
  
-   <div class="sd-widget reveal">
+   <div class="sd-widget reveal is-wide">
      <div class="sd-widget__chart">
        <div class="sd-widget__title">Vì sao ấn định giá làm chợ vắng?</div>
        <div class="sd-widget__hint">Kéo đường màu đỏ để thay đổi mức giá trưởng làng ấn định, và quan sát khoảng cách giữa lượng cung và lượng cầu.</div>
@@ -456,9 +448,9 @@
      </div>
      <div class="sd-widget__side">
        <div class="sd-legend">
-         <span><i style="background:var(--steel-soft);"></i> Đường cầu — cô Lan và người mua bánh</span>
-         <span><i style="background:var(--gold-soft);"></i> Đường cung — bà Tư và các lò bánh</span>
-         <span><i style="background:var(--danger);"></i> Mức giá do trưởng làng ấn định</span>
+         <span><i class="lg-demand"></i> Đường cầu — cô Lan và người mua bánh</span>
+         <span><i class="lg-supply"></i> Đường cung — bà Tư và các lò bánh</span>
+         <span><i class="lg-price"></i> Mức giá do trưởng làng ấn định</span>
        </div>
        <div class="sd-readout" aria-live="polite">Ở mức giá cân bằng, lượng cung khớp lượng cầu.</div>
      </div>
@@ -472,7 +464,7 @@
      <p>Giáo trình nêu ba khuyết tật lớn nhưng không đi vào từng loại khiếm khuyết cụ thể. Để phân tích chi tiết hơn, Bảng 4 mượn khung "thất bại thị trường" của kinh tế học phổ thông, gồm độc quyền, ngoại ứng, thông tin bất cân xứng và hàng hóa công. Đây là phần bổ sung ngoài giáo trình, được dùng làm công cụ phân tích chứ không trình bày như nội dung của Chương 2.</p>
    </div>
 
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table" style="min-width:760px;">
        <caption>Bảng 4 — Thất bại của thị trường và công cụ của bàn tay hữu hình (khung bổ sung ngoài giáo trình)</caption>
        <colgroup><col style="width:22%"><col style="width:46%"><col style="width:32%"></colgroup>
@@ -496,7 +488,7 @@
 </section>
  
 <!-- ============================== MỤC 6 ============================== -->
-<section class="section section--panel" id="s6">
+<section class="section" id="s6" data-theme="dusk">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">06</span>
@@ -516,13 +508,13 @@
      <p>Ngày 4 tháng 5 năm 2025, Bộ Chính trị ban hành Nghị quyết số 68-NQ/TW về phát triển kinh tế tư nhân. Nghị quyết xác định kinh tế tư nhân là một trong những động lực quan trọng nhất của nền kinh tế quốc gia, đặt mục tiêu đến năm 2030 có hai triệu doanh nghiệp hoạt động, tương đương hai mươi doanh nghiệp trên một nghìn dân. Nội dung này gần với vai trò của bàn tay vô hình đã trình bày ở mục 3: khu vực tư nhân vận hành theo cơ chế thị trường, lấy lợi nhuận làm động lực và cạnh tranh làm áp lực đổi mới.</p>
    </div>
  
-   <div class="policy policy--steel reveal">
+   <div class="policy policy--vis reveal">
      <div class="policy__title">Nghị quyết số 79-NQ/TW — phát triển kinh tế nhà nước</div>
      <div class="policy__date">Ban hành 6/1/2026 · Tổng Bí thư Tô Lâm ký</div>
      <p>Hơn tám tháng sau, ngày 6 tháng 1 năm 2026, Bộ Chính trị tiếp tục ban hành Nghị quyết số 79-NQ/TW về phát triển kinh tế nhà nước. Nghị quyết xác định kinh tế nhà nước là thành phần đặc biệt quan trọng của nền kinh tế thị trường định hướng xã hội chủ nghĩa, giữ vai trò chủ đạo, thực hiện chức năng định hướng, dẫn dắt và điều tiết các hoạt động kinh tế; đồng thời nêu rõ khu vực này bình đẳng trước pháp luật với các thành phần kinh tế khác, cùng phát triển lâu dài, hợp tác và cạnh tranh lành mạnh. Mục tiêu đến năm 2030 là đưa một đến ba doanh nghiệp nhà nước vào nhóm 500 doanh nghiệp lớn nhất thế giới và năm mươi doanh nghiệp vào nhóm 500 doanh nghiệp lớn nhất Đông Nam Á.</p>
    </div>
  
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table" style="min-width:760px;">
        <caption>Bảng 5 — Hai nghị quyết đối chiếu với khung lý thuyết của báo cáo</caption>
        <colgroup><col style="width:21%"><col style="width:13%"><col style="width:35%"><col style="width:31%"></colgroup>
@@ -534,13 +526,13 @@
            <td><b>Nghị quyết 68-NQ/TW</b></td>
            <td>4/5/2025</td>
            <td>Một trong những động lực quan trọng nhất của nền kinh tế quốc gia</td>
-           <td><span class="tag tag--gold">Vô hình</span> — thị trường, cạnh tranh, lợi nhuận</td>
+           <td><span class="tag tag--inv">Vô hình</span> — thị trường, cạnh tranh, lợi nhuận</td>
          </tr>
          <tr>
            <td><b>Nghị quyết 79-NQ/TW</b></td>
            <td>6/1/2026</td>
            <td>Thành phần đặc biệt quan trọng, giữ vai trò chủ đạo, định hướng và điều tiết</td>
-           <td><span class="tag tag--steel">Hữu hình</span> — dẫn dắt trong khuôn khổ cạnh tranh lành mạnh</td>
+           <td><span class="tag tag--vis">Hữu hình</span> — dẫn dắt trong khuôn khổ cạnh tranh lành mạnh</td>
          </tr>
        </tbody>
      </table>
@@ -555,7 +547,7 @@
 </section>
  
 <!-- ============================== MỤC 7 ============================== -->
-<section class="section" id="s7">
+<section class="section" id="s7" data-theme="dusk">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">07</span>
@@ -566,13 +558,13 @@
    </div>
  
    <h3 class="subhead reveal">7.1. So sánh hai bàn tay</h3>
-   <div class="duality-headline reveal">
-     <span class="duality-headline__side duality-headline__side--gold">Bàn tay vô hình</span>
+   <div class="duality-headline reveal is-wide">
+     <span class="duality-headline__side duality-headline__side--inv">Bàn tay vô hình</span>
      <span class="duality-headline__mid">Bảng 6</span>
-     <span class="duality-headline__side duality-headline__side--steel">Bàn tay hữu hình</span>
+     <span class="duality-headline__side duality-headline__side--vis">Bàn tay hữu hình</span>
    </div>
  
-   <div class="table-wrap reveal">
+   <div class="table-wrap reveal is-wide">
      <table class="data-table is-duality">
        <colgroup><col style="width:18%"><col style="width:41%"><col style="width:41%"></colgroup>
        <thead>
@@ -582,8 +574,8 @@
          <tr><td>Chủ thể</td><td>Thị trường</td><td>Nhà nước</td></tr>
          <tr><td>Cơ chế</td><td>Cung – cầu, cạnh tranh, giá cả</td><td>Chính sách, luật pháp: thuế, quy định</td></tr>
          <tr><td>Mục tiêu</td><td>Hiệu quả kinh tế</td><td>Công bằng và ổn định</td></tr>
-         <tr><td>Điểm mạnh<br><span style="color:var(--ink-faint);font-size:.8em;">(theo câu chuyện)</span></td><td>Phân bổ nguồn lực qua giá, tạo động lực và đổi mới (Hồi 1)</td><td>Đặt luật, sửa khuyết tật, cung ứng hàng hóa công, giữ ổn định (Hồi 3)</td></tr>
-         <tr><td>Điểm yếu<br><span style="color:var(--ink-faint);font-size:.8em;">(theo câu chuyện)</span></td><td>Ô nhiễm, găm hàng, hàng giả, phân hóa, khủng hoảng (Hồi 2)</td><td>Ấn định giá làm mất tín hiệu và động lực (cuối Hồi 3)</td></tr>
+         <tr><td>Điểm mạnh<br><span style="color:var(--ink-3);font-size:.8em;">(theo câu chuyện)</span></td><td>Phân bổ nguồn lực qua giá, tạo động lực và đổi mới (Hồi 1)</td><td>Đặt luật, sửa khuyết tật, cung ứng hàng hóa công, giữ ổn định (Hồi 3)</td></tr>
+         <tr><td>Điểm yếu<br><span style="color:var(--ink-3);font-size:.8em;">(theo câu chuyện)</span></td><td>Ô nhiễm, găm hàng, hàng giả, phân hóa, khủng hoảng (Hồi 2)</td><td>Ấn định giá làm mất tín hiệu và động lực (cuối Hồi 3)</td></tr>
        </tbody>
      </table>
    </div>
@@ -641,7 +633,7 @@
 </section>
  
 <!-- ============================== MỤC 8 ============================== -->
-<section class="section section--panel" id="s8">
+<section class="section" id="s8" data-theme="dusk">
  <div class="section__inner">
    <div class="section__head reveal">
      <span class="section__num">08</span>
@@ -675,7 +667,7 @@
 </section>
 
 <!-- ============================== TỔNG KẾT ============================== -->
-<section class="section section--panel quiz-section" id="quiz" aria-labelledby="quiz-heading">
+<section class="section quiz-section" id="quiz" data-theme="dusk" aria-labelledby="quiz-heading">
  <div class="section__inner">
   <div class="section__head reveal">
    <span class="section__num">09</span>
@@ -685,7 +677,7 @@
    </div>
   </div>
   <p class="lede reveal">Từ cơ chế thị trường đến vai trò Nhà nước — thử nối các ý vừa đọc qua năm câu hỏi ngắn.</p>
-  <div class="quiz reveal" id="quiz-app">
+  <div class="quiz reveal is-wide" id="quiz-app">
    <div class="quiz__intro" id="quiz-intro">
     <div class="quiz__intro-copy">
      <span class="quiz__eyebrow">Không tính giờ · Có giải thích</span>
@@ -728,9 +720,15 @@
  <span class="footer__credit">Mô hình bàn tay 3D © 2026 Emma L. D. Lieker, CC BY-NC 4.0</span>
 </footer>
  
-<script src="js/main.js?v=20260928-quiz-1"></script>
-<script src="js/quiz.js?v=20260928-quiz-1"></script>
-<script type="module" src="js/scene3d.js?v=space-motion-5"></script>
+<div class="stage-labels" id="stage-labels" aria-hidden="true"></div>
+<svg class="stage-lines" id="stage-lines" aria-hidden="true"></svg>
+
+<script src="vendor/gsap/gsap.min.js"></script>
+<script src="vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis/lenis.min.js"></script>
+<script src="js/main.js?v=20260929-b"></script>
+<script src="js/quiz.js?v=20260929-b"></script>
+<script type="module" src="js/scene3d.js?v=20260929-b"></script>
 
 </body>
 </html>

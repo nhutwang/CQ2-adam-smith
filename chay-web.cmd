@@ -3,7 +3,7 @@ setlocal EnableExtensions
 rem ---------------------------------------------------------------------------
 rem  Chay web "Ban tay vo hinh / ban tay huu hinh" (render day du qua HTTP server).
 rem  Dung: nhay dup file nay, hoac:  chay-web.cmd 8080
-rem  Can: Python 3 (hoac Node.js) va Internet (three.js, GSAP, Lenis, Google Fonts qua CDN).
+rem  Can: Python 3 (hoac Node.js). Khong can Internet: thu vien va phong chu da nam trong ban-tay-web.
 rem ---------------------------------------------------------------------------
 set "PORT=%~1"
 if "%PORT%"=="" set "PORT=8080"
@@ -52,7 +52,7 @@ echo Dang khoi chay HTTP Server tai: %SITE%
 echo Dia chi trinh duyet: %URL%
 echo.
 echo Luu y:
-echo  - Can co ket noi Internet de tai three.js, GSAP, Lenis, Google Fonts tu CDN.
+echo  - Khong can Internet: thu vien va phong chu da nam san trong thu muc ban-tay-web.
 echo  - Dong cua so nay hoac an Ctrl+C de tat server.
 echo.
 

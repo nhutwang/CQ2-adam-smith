@@ -1,47 +1,50 @@
 BÀN TAY VÔ HÌNH / BÀN TAY HỮU HÌNH — Trang thuyết trình CQ2 (SS008, Nhóm 2)
 =========================================================================
 
-CÁCH MỞ (phải chạy qua HTTP server — KHÔNG nháy đúp index.html)
-- Lý do: js/scene3d.js là ES module; mở bằng file:// thì Chrome / Edge / Firefox chặn vì CORS
-  (origin 'null') nên mất toàn bộ sân khấu 3D, chỉ còn phần chữ và hiệu ứng CSS.
-- Cách 1 (tiện nhất trên Windows): nháy đúp chay-web.cmd ở thư mục gốc dự án — tự chạy server
-  cổng 8080 rồi mở trình duyệt. Muốn cổng khác: chay-web.cmd 9000
-- Cách 2 (Python, có sẵn): cd ban-tay-web
-                           python -m http.server 8080 --bind 127.0.0.1
-                           rồi mở http://127.0.0.1:8080/index.html
-- Cách 3 (Node): npx --yes serve . -l 8080   (hoặc npx --yes http-server -p 8080 -c-1)
-- Cách 4 (VS Code): cài extension Live Server, chuột phải index.html > Open with Live Server.
-  (Không khuyến nghị: chrome --allow-file-access-from-files — hạ bảo mật, có máy vẫn chặn.)
-- Không cần cài đặt hay build.
-- Cần Internet khi mở trang: three.js (unpkg), GSAP + Lenis (jsdelivr) và phông Be Vietnam Pro,
-  Newsreader (Google Fonts) — vì các thư viện này nạp từ CDN.
-  Nếu offline: phần chữ vẫn hiện (phông hệ thống thay thế) nhưng mất sân khấu 3D và hiệu ứng cuộn.
+CÁCH MỞ (phải chạy qua HTTP server — không nháy đúp index.html)
+- Lý do: js/scene3d.js là ES module; mở bằng file:// thì trình duyệt chặn nên mất sân khấu 3D.
+- Cách 1 (Windows): nháy đúp chay-web.cmd ở thư mục gốc dự án. Muốn cổng khác: chay-web.cmd 9000
+- Cách 2 (Python): cd ban-tay-web  →  python -m http.server 8080 --bind 127.0.0.1
+                   rồi mở http://127.0.0.1:8080/index.html
+- Cách 3 (VS Code): extension Live Server → chuột phải index.html → Open with Live Server.
+- KHÔNG cần Internet: three.js, GSAP, Lenis và phông chữ đều nằm sẵn trong vendor/ và fonts/.
 
 CẤU TRÚC
-  index.html      Toàn bộ nội dung tiếng Việt (hero + 8 mục + chân trang)
-  css/style.css   Giao diện, hiệu ứng, responsive, chế độ in
-  js/main.js      Thanh tiến độ, điều hướng, ba hồi truyện, đồ thị cung – cầu, nền hạt ở hero
-  js/scene3d.js   Sân khấu 3D ở nền: hai bàn tay (lưới khung + da thật), hạt lơ lửng, đèn, bloom
+  index.html        Nội dung (hero + 8 mục + trắc nghiệm)
+  css/style.css     Hệ màu theo chương (night / paper / dusk), bố cục, in ấn
+  css/fonts.css     Phông Be Vietnam Pro, Newsreader (lưu cục bộ trong fonts/)
+  js/main.js        Cuộn mượt, đổi chủ đề theo mục, điều hướng, câu chuyện ba hồi, đồ thị cung – cầu
+  js/scene3d.js     Sân khấu 3D: hai bàn tay có xương, kịch bản theo cuộn, nhãn neo vào ngón tay
+  js/poses.js       Thư viện tư thế (xòe, OK, khép, chỉ, chìa ngón cái, nắm)
+  js/quiz.js        Trắc nghiệm 5 câu
+  models/hand-visible.glb    Bàn tay hữu hình (mô hình giải phẫu, texture đã nén, sửa vật liệu da)
+  models/hand-invisible.glb  Bàn tay vô hình (cùng bộ 21 xương, hiển thị bằng hạt + viền sáng)
+  vendor/           three.js 0.186, GSAP 3.15, Lenis 1.3 (lấy từ node_modules.zip của nhóm)
 
-TUỲ CHỈNH NHANH SÂN KHẤU 3D (js/scene3d.js, đầu tệp)
-  HAND_FLIP        Góc xoay hai bàn tay quanh trục Y (mặc định Math.PI = 180°, chiều trái → phải)
-  HAND_SIZE        Cỡ bàn tay (mặc định 5.6; trước đây 4.4 — càng lớn càng phóng to)
-  HAND_BRIGHTNESS  Độ sáng bàn tay (mặc định 0.72; đặt 1 để sáng như cũ)
-  WIRE_BRIGHTNESS  Độ sáng lưới khung bàn tay vô hình (mặc định 0.8)
-  state.dust       Độ hiện của các lớp hạt lơ lửng; trong bảng "chapters" màn mở đầu
-                   (opening) đặt dust: 0 nên lúc mới vào không còn hiệu ứng khối lơ lửng.
-                   Muốn thấy hạt ngay từ màn đầu, đổi dust của opening thành 0.2 – 0.4.
-  (Ngoài ra: cường độ 4 đèn ở đầu tệp, renderer.toneMappingExposure và thông số
-   UnrealBloomPass đều đã được hạ xuống để hai bàn tay dịu mắt hơn.)
+HỆ MÀU
+- Vô hình = ánh sáng lạnh (--inv), hữu hình = đất nung (--vis), đỏ (--danger) chỉ dùng cho khuyết tật.
+- Nền đổi theo chương: tối (mục 1, 3, 4), giấy sáng (mục 5), than (mục 2, 6, 7, 8).
+  Mỗi <section> khai báo data-theme="night|paper|dusk" và data-hand="inv|vis".
+
+TINH CHỈNH BÀN TAY (js/scene3d.js, mảng CUES)
+- Mỗi dòng là một cảnh, neo vào một phần tử trong trang (at: '#s3 .section__head' ...).
+- H(show, x, y, size, angle, tilt, roll, pose):
+    show   1 = hiện, 0 = ẩn (bàn tay hữu hình tan rã / hiện ra)
+    x, y   vị trí cổ tay trên màn hình (-1..1; x = 1 là mép phải, y = -1 là mép dưới)
+    size   chiều dài bàn tay so với chiều cao màn hình
+    angle  hướng ngón tay (0 = lên, 90 = sang trái, -90 = sang phải)
+    tilt   nghiêng ngón về phía người xem; roll: xoay quanh cánh tay (0 = lòng bàn tay hướng người xem)
+    pose   'open' 'reach' 'relax' 'cup' 'flat' 'point' 'ok' 'thumb' 'grip' 'fist'
+- labels: nhãn neo vào đầu ngón, ví dụ ['inv', 'index_dist', 'Cạnh tranh'].
+- Console trình duyệt: __hands.CUES để thử giá trị trực tiếp.
 
 KHI THUYẾT TRÌNH
 - Phím ↑ / ↓ (hoặc PageUp / PageDown): chuyển giữa các mục.
-- Mục 2: bấm ba tab "Hồi 1 / Hồi 2 / Hồi 3" để đổi cảnh minh họa phiên chợ.
-- Mục 5: kéo chấm đỏ trên đồ thị (hoặc dùng phím mũi tên khi đang chọn chấm) để thấy khan hàng / dư thừa khi giá bị ấn định;
-  nút "Đưa về mức giá cân bằng" để đặt lại.
-- Hero: di chuột để thấy vòng xanh (bàn tay hữu hình) tác động lên đàn hạt (thị trường tự tổ chức).
+- Mục 2: bấm "Hồi 1 / Hồi 2 / Hồi 3" — bàn tay 3D phản ứng theo từng hồi.
+- Mục 5: kéo chấm trên đồ thị để ấn định giá — giá càng thấp, bàn tay hữu hình càng nắm chặt.
+- Mục 7.2: cuộn chậm để thấy lớp da tan dần, lộ bàn tay vô hình bên trong.
+- In / xuất PDF: Ctrl + P.
 
-TUỲ CHỈNH NHANH
-- Màu: đổi biến --gold (bàn tay vô hình) và --steel (bàn tay hữu hình) ở đầu css/style.css.
-- Người dùng bật "giảm chuyển động" trong hệ điều hành sẽ tự động thấy bản ít hiệu ứng.
-- In / xuất PDF: Ctrl/Cmd + P (đã có kiểu in sáng, gọn).
+GHI CÔNG
+- Mô hình bàn tay: 3D Rigged Hand Model © 2026 Emma L. D. Lieker, giấy phép CC BY-NC 4.0
+  (dùng cho mục đích học tập, không thương mại; đã chỉnh vật liệu và tư thế).
