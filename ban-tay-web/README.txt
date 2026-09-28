@@ -38,6 +38,11 @@ TINH CHỈNH BÀN TAY (js/scene3d.js, mảng CUES)
 - labels: nhãn neo vào đầu ngón, ví dụ ['inv', 'index_dist', 'Cạnh tranh'].
 - Console trình duyệt: __hands.CUES để thử giá trị trực tiếp.
 
+HIỆU NĂNG
+- Trang tự đo tốc độ khung hình; nếu máy chậm sẽ tự giảm độ phân giải, số hạt, rồi tắt hiệu ứng phát sáng.
+- Ép mức chất lượng bằng tham số địa chỉ: index.html?q=2 (đầy đủ), ?q=1 (vừa), ?q=0 (nhẹ nhất).
+  Nên thử trước trên chính máy sẽ chiếu; nếu mượt ở ?q=2 thì dùng địa chỉ đó khi thuyết trình.
+
 KHI THUYẾT TRÌNH
 - Phím ↑ / ↓ (hoặc PageUp / PageDown): chuyển giữa các mục.
 - Mục 2: bấm "Hồi 1 / Hồi 2 / Hồi 3" — bàn tay 3D phản ứng theo từng hồi.

@@ -399,6 +399,10 @@ class ParticleSkin {
     this.groupId = groupId;
     this.centers = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
   }
+  setActive(fraction) {
+    this.active = Math.max(1, Math.floor(this.count * fraction));
+    this.geometry.setDrawRange(0, this.active);
+  }
   update() {
     const mesh = this.mesh, pos = mesh.geometry.attributes.position, s = this.skinned, v = this.vtx;
     for (let i = 0; i < pos.count; i++) {
@@ -408,7 +412,8 @@ class ParticleSkin {
     }
     const out = this.positions, tri = this.tri, bary = this.bary, gid = this.groupId, C = this.centers, n = [0, 0, 0];
     C.forEach(c => c.set(0, 0, 0));
-    for (let p = 0; p < this.count; p++) {
+    const active = this.active || this.count;
+    for (let p = 0; p < active; p++) {
       const a = tri[p * 3] * 3, b = tri[p * 3 + 1] * 3, c = tri[p * 3 + 2] * 3;
       const u = bary[p * 3], w = bary[p * 3 + 1], z = bary[p * 3 + 2];
       out[p * 3] = s[a] * u + s[b] * w + s[c] * z;
@@ -432,7 +437,7 @@ function H(show, x, y, size, angle, tilt, roll, pose) { return { show, x, y, siz
 
 const CUES = [
   { at: '#hero', inv: H(1, 0.99, 0.9, 0.78, 138, 12, 150, 'reach'), vis: H(1, 0.66, -1.05, 0.76, 30, 18, 25, 'reach'), split: 0, ghost: 0 },
-  { at: '#s1 .section__head', inv: H(1, 1.02, 0.92, 0.7, 150, 8, 150, 'relax'), vis: H(1, 0.32, -1.18, 0.66, -30, 10, 20, 'relax'), split: 0, ghost: 0 },
+  { at: '#s1 .section__head', inv: H(1, 1.06, 1.02, 0.72, 150, 8, 150, 'relax'), vis: H(1, 0.8, -1.22, 0.7, 22, 18, 25, 'relax'), split: 0, ghost: 0 },
   { at: '#s2 .section__head', id: 'story', inv: H(1, 0.62, -0.9, 0.82, -8, 22, 180, 'cup'), vis: H(0, 0.9, -1.3, 0.6, 20, 0, 0, 'relax'), split: 0, ghost: 0 },
   { at: '#s3 .section__head', inv: H(1, 0.58, -0.86, 0.74, 6, 12, 0, 'open'), vis: H(0, 0.9, -1.3, 0.6, 20, 0, 0, 'relax'), split: 0, ghost: 0,
     labels: [['inv', 'thumb_dist', 'Tư lợi'], ['inv', 'index_dist', 'Cạnh tranh'], ['inv', 'midd_dist', 'Giá cả – tín hiệu']] },
@@ -444,10 +449,10 @@ const CUES = [
   { at: '#s5 .section__head', inv: H(0, 0.9, 1.3, 0.6, 160, 0, 150, 'relax'), vis: H(1, 0.58, -0.9, 0.74, -2, 14, 0, 'flat'), split: 0, ghost: 0,
     labels: [['vis', 'thumb_dist', 'Pháp luật'], ['vis', 'index_dist', 'Chính sách'], ['vis', 'pinky_dist', 'Công cụ kinh tế']] },
   { at: '#s5 .sd-widget', id: 'price', inv: H(0, 0.9, 1.3, 0.6, 160, 0, 150, 'relax'), vis: H(1, 0.7, -1.0, 0.8, 0, 20, 0, 'cup'), split: 0, ghost: 0 },
-  { at: '#s6 .section__head', inv: H(1, 0.42, -1.05, 0.62, 10, 25, 180, 'cup'), vis: H(1, 0.84, -1.05, 0.62, -10, 25, 180, 'cup'), split: 0, ghost: 0 },
+  { at: '#s6 .section__head', inv: H(1, 0.52, -1.02, 0.56, 12, 25, 180, 'cup'), vis: H(1, 0.78, -1.04, 0.56, -12, 25, 180, 'cup'), split: 0, ghost: 0 },
   { at: '#s7 .section__head', inv: H(1, 0.99, 0.9, 0.78, 138, 12, 150, 'reach'), vis: H(1, 0.665, -1.035, 0.77, 30, 18, 25, 'reach'), split: 0, ghost: 0 },
   { at: '#s7 .subhead:nth-of-type(2)', id: 'peel', inv: H(0, 0.98, 0.96, 0.8, 140, 12, 150, 'reach'), vis: H(1, 0.6, -1.0, 0.92, 2, 12, 0, 'open'), split: 0, ghost: 1 },
-  { at: '#s7 .subhead:nth-of-type(3)', inv: H(1, 0.46, -1.08, 0.62, 12, 20, 0, 'relax'), vis: H(1, 0.82, -1.08, 0.62, -12, 20, 0, 'relax'), split: 0, ghost: 0 },
+  { at: '#s7 .subhead:nth-of-type(3)', inv: H(1, 0.42, -1.08, 0.6, 12, 20, 0, 'relax'), vis: H(1, 0.76, -1.08, 0.6, -12, 20, 0, 'relax'), split: 0, ghost: 0 },
   { at: '#s8', inv: H(0, 0.99, 0.9, 0.6, 138, 12, 150, 'relax'), vis: H(0, 0.66, -1.2, 0.6, 30, 18, 25, 'relax'), split: 0, ghost: 0 },
   { at: '#quiz', inv: H(1, 1.0, 0.95, 0.62, 138, 12, 150, 'reach'), vis: H(1, 0.78, -1.08, 0.6, 30, 18, 25, 'reach'), split: 0, ghost: 0 }
 ];
@@ -460,7 +465,23 @@ const view = {
 const overlay = { reading: 0, act: 1, scatterT: 0, actVisT: 0, squeezeT: 0 };
 
 let anchors = [];
+/* vùng sân khấu: bắt đầu từ mép phải thực tế của cột chữ (đo từ trang), để tay không lấn chữ
+   ở mọi độ rộng màn hình. Tọa độ x trong CUES được viết cho mép trái sân khấu = 0 (NDC). */
+let stageL = 0;
+function textRight(el) {
+  if (!el) return 0;
+  const r = document.createRange(); r.selectNodeContents(el);
+  let right = 0; for (const rect of r.getClientRects()) right = Math.max(right, rect.right);
+  return right;
+}
+function measureStage() {
+  const inner = document.querySelector('#s1 .section__inner');
+  const colRightPx = Math.max(textRight(document.querySelector('.hero__title')), textRight(document.querySelector('.hero__sub')), inner ? inner.getBoundingClientRect().right : 0);
+  stageL = Math.max(0, ((colRightPx + 28) / innerWidth) * 2 - 1);
+}
+function remapX(x) { return stageL + x * (1 - stageL); }
 function measureAnchors() {
+  measureStage();
   anchors = CUES.map(cue => {
     const el = document.querySelector(cue.at);
     if (!el) return null;
@@ -541,6 +562,7 @@ Promise.all([loader.loadAsync('./models/hand-visible.glb'), loader.loadAsync('./
     invMesh.renderOrder = 3;
     invParticles = new ParticleSkin(invMesh, invHand, innerWidth < 700 ? 5000 : 11000, invUniforms);
     invParticles.points.renderOrder = 4;
+    applyQuality();
 
     scene.add(visHand.holder, invHand.holder);
     document.body.dataset.stage = 'ready';
@@ -580,6 +602,46 @@ function mixHand(a, b, w, out) {
 }
 
 const clock = new THREE.Clock();
+
+/* chất lượng tự điều chỉnh theo tốc độ khung hình thật của máy chiếu
+   2 = đầy đủ · 1 = giảm độ phân giải · 0 = giảm thêm hạt và tắt phát sáng
+   có thể ép bằng ?q=0|1|2 trên thanh địa chỉ */
+const forcedQ = new URLSearchParams(location.search).get('q');
+const perf = { level: forcedQ != null ? Math.max(0, Math.min(2, Number(forcedQ))) : 2, locked: forcedQ != null, acc: 0, n: 0, since: 0 };
+function applyQuality() {
+  const dpr = window.devicePixelRatio || 1;
+  const ratio = perf.level === 2 ? Math.min(dpr, 1.6) : perf.level === 1 ? Math.min(dpr, 1.1) : Math.min(dpr, 0.85);
+  renderer.setPixelRatio(ratio);
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setPixelRatio ? composer.setPixelRatio(ratio) : null;
+  composer.setSize(innerWidth, innerHeight);
+  bloom.enabled = perf.level > 0;
+  const div = perf.level === 2 ? 2 : 3;
+  bloom.resolution.set(innerWidth / div, innerHeight / div);
+  invUniforms.uPixelRatio.value = ratio;
+  if (invParticles) invParticles.setActive(perf.level === 0 ? 0.5 : 1);
+  document.body.dataset.quality = String(perf.level);
+}
+function trackPerf(dt, t) {
+  if (perf.locked || perf.level === 0 || t < 2 || document.hidden) return;
+  perf.acc += Math.min(dt, 0.5); perf.n++;
+  if (perf.acc < 2.5) return;            // đánh giá mỗi 2,5 giây, bất kể máy nhanh hay chậm
+  const avg = perf.acc / perf.n;
+  perf.acc = 0; perf.n = 0;
+  if (avg > 1 / 40) { perf.level -= 1; perf.since = t; applyQuality(); }
+}
+
+/* con trỏ chuột: hai bàn tay nghiêng nhẹ, lệch chiều nhau để tạo chiều sâu */
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+if (finePointer && !reduceMotion) {
+  window.addEventListener('pointermove', e => {
+    pointer.tx = (e.clientX / innerWidth) * 2 - 1;
+    pointer.ty = (e.clientY / innerHeight) * 2 - 1;
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => { pointer.tx = 0; pointer.ty = 0; });
+}
+let intro = reduceMotion ? 1 : 0;
 let running = false, rafId = 0, lastIndex = -1, poseCache = new Map();
 function poseOf(spec) {
   const k = JSON.stringify(spec);
@@ -598,15 +660,17 @@ for (const n of BONE_NAMES) idleQ[n] = new THREE.Quaternion();
 function placeHand(hand, st, poseMap, t, kindIndex) {
   const { halfH, halfW } = worldHalf();
   const narrow = innerWidth < 1100;
-  const x = narrow ? lerp(0, st.x, 0.35) : st.x;
+  const x = narrow ? lerp(0, st.x, 0.35) : remapX(st.x);
   hand.holder.position.set(x * halfW, st.y * halfH, 0);
   const s = st.size * 2 * halfH * (narrow ? 0.85 : 1);
   hand.holder.scale.setScalar(s);
   // hướng: quay trong mặt phẳng màn hình ∘ nghiêng về người xem ∘ xoay quanh trục cánh tay
   const breathe = reduceMotion ? 0 : Math.sin(t * 0.6 + kindIndex * 2.1);
-  const e = new THREE.Euler(st.tilt * DEG + breathe * 0.02, st.roll * DEG, (st.angle + breathe * 1.2) * DEG, 'ZXY');
+  const sgn = kindIndex === 0 ? 1 : -1;
+  const e = new THREE.Euler((st.tilt + pointer.y * 4 * sgn) * DEG + breathe * 0.02, (st.roll + pointer.x * 7 * sgn) * DEG, (st.angle + breathe * 1.2 + pointer.x * 1.5) * DEG, 'ZXY');
   hand.holder.quaternion.setFromEuler(e);
-  hand.holder.position.y += breathe * 0.012 * halfH;
+  hand.holder.position.y += breathe * 0.012 * halfH - pointer.y * 0.012 * halfH * sgn;
+  hand.holder.position.x += pointer.x * 0.012 * halfW * sgn;
   // tư thế + nhịp thở nhẹ ở ngón (không bao giờ đứng như tượng)
   const pose = {};
   for (const n of BONE_NAMES) {
@@ -618,8 +682,14 @@ function placeHand(hand, st, poseMap, t, kindIndex) {
 }
 
 function update() {
-  const dt = Math.min(clock.getDelta(), 0.12);
+  const rawDt = clock.getDelta();
+  const dt = Math.min(rawDt, 0.12);
   const t = clock.elapsedTime;
+  trackPerf(rawDt, t);
+  pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3));
+  pointer.y += (pointer.ty - pointer.y) * (1 - Math.exp(-dt * 3));
+  if (intro < 1) intro = Math.min(1, intro + dt / 2.2);
+  const introE = intro * intro * (3 - 2 * intro);
   readCssColors();
   scene.background.copy(cssColor.bg);
   invUniforms.uColor.value.copy(cssColor.inv);
@@ -682,6 +752,9 @@ function update() {
     const r = view.reading;
     const retreat = (st) => ({ ...st, x: lerp(st.x, 0.96, r), y: lerp(st.y, st.y - 0.18, r), size: lerp(st.size, st.size * 0.6, r) });
     const sInv = retreat(view.inv), sVis = retreat(view.vis);
+    // mở màn: bàn tay hữu hình hiện dần từ nhiễu, bàn tay vô hình sáng dần lên
+    sVis.show *= smoothstep(0.25, 1, introE);
+    sInv.show *= smoothstep(0, 0.7, introE);
 
     // bàn tay hữu hình: tư thế + nắm lại khi giá bị ấn định
     const visPose = {};
@@ -799,11 +872,7 @@ window.addEventListener('hands:price', e => { overlay.squeezeT = Math.max(0, Mat
 function onResize() {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
-  renderer.setSize(innerWidth, innerHeight);
-  composer.setSize(innerWidth, innerHeight);
-  bloom.resolution.set(innerWidth / 2, innerHeight / 2);
-  invUniforms.uPixelRatio.value = renderer.getPixelRatio();
+  applyQuality();
   measureAnchors();
 }
 window.addEventListener('resize', onResize, { passive: true });
@@ -814,6 +883,6 @@ if ('ResizeObserver' in window) new ResizeObserver(() => measureAnchors()).obser
 
 // để kiểm thử và tinh chỉnh từ console
 window.__hands = {
-  CUES, view, overlay, LIB, measureAnchors,
+  CUES, view, overlay, LIB, measureAnchors, perf,
   tip(who, bone) { const h = who === 'vis' ? visHand : invHand; return h ? toScreen(h.tipWorld(bone, new THREE.Vector3()).clone()) : null; }
 };
