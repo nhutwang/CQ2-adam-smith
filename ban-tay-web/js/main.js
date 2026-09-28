@@ -83,7 +83,8 @@
     window.addEventListener('keydown', function (e) {
       if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
       var active = document.activeElement;
-      if (active && active.closest && (active.closest('.sd-widget') || active.closest('.quiz') || /INPUT|TEXTAREA|SELECT/.test(active.tagName))) return;
+      // chỉ nhường phím mũi tên cho ô chọn đáp án, ô nhập và tay kéo của đồ thị
+      if (active && (/INPUT|TEXTAREA|SELECT/.test(active.tagName) || (active.getAttribute && active.getAttribute('role') === 'slider'))) return;
       var idx = Math.max(0, SECTION_ORDER.indexOf(currentSectionId));
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
