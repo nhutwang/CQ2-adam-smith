@@ -35,34 +35,46 @@
     else el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
-  /* 2. Mục đang xem → chủ đề nền, màu nhấn, điều hướng, thanh tiến độ */
+  /* 2. Mục đang xem → chủ đề nền, màu nhấn, điều hướng, thanh tiến độ
+     Các khối có data-theme gồm cả trang đầu và đoạn chuyển chương. Đoạn chuyển chương
+     có data-theme-to đổi nền giữa chừng (khi lá chớp đã phủ kín màn hình). */
+  function pinProgress(el) {
+    var r = el.getBoundingClientRect();
+    var span = Math.max(1, el.offsetHeight - window.innerHeight);
+    return Math.max(0, Math.min(1, -r.top / span));
+  }
   function initSectionState() {
-    var sections = SECTION_ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    var blocks = qsa('main > section[data-theme]');
     var navLinks = qsa('[data-target]');
     var counter = qs('.menu-btn__count');
     var fill = qs('.progress-fill');
-    var pending = false;
+    var pending = false, lastKey = '';
 
-    function apply(section) {
-      var id = section.id;
-      if (id === currentSectionId && root.dataset.theme) return;
-      currentSectionId = id;
-      root.dataset.theme = section.dataset.theme || 'night';
-      if (section.dataset.hand) root.dataset.hand = section.dataset.hand; else delete root.dataset.hand;
-      navLinks.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('data-target') === id); });
+    function apply(block) {
+      var theme = block.dataset.theme || 'night';
+      if (block.dataset.themeTo && pinProgress(block) >= parseFloat(block.dataset['switch'] || '0.75')) theme = block.dataset.themeTo;
+      var navId = block.dataset.nav || block.id;
+      var hand = block.dataset.hand || (document.getElementById(navId) || block).dataset.hand || '';
+      var k = navId + '|' + theme + '|' + hand;
+      if (k === lastKey) return;
+      lastKey = k;
+      currentSectionId = navId;
+      root.dataset.theme = theme;
+      if (hand) root.dataset.hand = hand; else delete root.dataset.hand;
+      navLinks.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('data-target') === navId); });
       if (counter) {
-        var idx = SECTION_ORDER.indexOf(id);
-        counter.textContent = id === 'quiz' ? 'Quiz' : idx <= 0 ? ' ' : idx + ' / 8';
+        var idx = SECTION_ORDER.indexOf(navId);
+        counter.textContent = navId === 'quiz' ? 'Quiz' : idx <= 0 ? ' ' : idx + ' / 8';
       }
-      emit('hands:section', { id: id, theme: root.dataset.theme });
+      emit('hands:section', { id: navId, theme: theme });
     }
 
     function update() {
       pending = false;
       var mid = window.innerHeight * 0.5;
-      var current = sections[0];
-      for (var i = 0; i < sections.length; i++) {
-        if (sections[i].getBoundingClientRect().top <= mid) current = sections[i];
+      var current = blocks[0];
+      for (var i = 0; i < blocks.length; i++) {
+        if (blocks[i].getBoundingClientRect().top <= mid) current = blocks[i];
         else break;
       }
       apply(current);
@@ -74,28 +86,42 @@
     function schedule() { if (!pending) { pending = true; requestAnimationFrame(update); } }
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
-    currentSectionId = '';
     update();
   }
 
-  /* 3. Phím ↑ ↓ / PageUp PageDown chuyển mục khi thuyết trình */
+  /* 3. Phím ↑ ↓ / PageUp PageDown khi thuyết trình: mỗi lần bấm tới một nhịp.
+     Nhịp = đầu mỗi mục, cộng các điểm dừng trong đoạn được ghim (data-stops). */
+  function navStops() {
+    var stops = [];
+    qsa('main > section').forEach(function (el) {
+      var top = el.getBoundingClientRect().top + window.scrollY;
+      if (el.dataset.stops) {
+        var span = Math.max(1, el.offsetHeight - window.innerHeight);
+        el.dataset.stops.split(',').forEach(function (p) { stops.push(Math.round(top + parseFloat(p) * span)); });
+      } else {
+        stops.push(Math.max(0, Math.round(top - 8)));
+      }
+    });
+    return stops.sort(function (a, b) { return a - b; });
+  }
+  function goTo(y) {
+    if (lenis) lenis.scrollTo(y, { duration: 1.6, easing: function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; } });
+    else window.scrollTo({ top: y, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
   function initKeyboardNav() {
     window.addEventListener('keydown', function (e) {
       if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
       var active = document.activeElement;
       // chỉ nhường phím mũi tên cho ô chọn đáp án, ô nhập và tay kéo của đồ thị
       if (active && (/INPUT|TEXTAREA|SELECT/.test(active.tagName) || (active.getAttribute && active.getAttribute('role') === 'slider'))) return;
-      var idx = Math.max(0, SECTION_ORDER.indexOf(currentSectionId));
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        e.preventDefault();
-        scrollToSection(SECTION_ORDER[Math.min(idx + 1, SECTION_ORDER.length - 1)]);
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        var el = document.getElementById(currentSectionId);
-        // nếu đang ở giữa mục thì về đầu mục trước, không nhảy qua hai mục
-        var target = el && el.getBoundingClientRect().top < -40 ? currentSectionId : SECTION_ORDER[Math.max(idx - 1, 0)];
-        scrollToSection(target);
-      }
+      var down = e.key === 'ArrowDown' || e.key === 'PageDown';
+      var up = e.key === 'ArrowUp' || e.key === 'PageUp';
+      if (!down && !up) return;
+      e.preventDefault();
+      var y = lenis ? lenis.targetScroll : window.scrollY;
+      var stops = navStops(), i;
+      if (down) { for (i = 0; i < stops.length; i++) if (stops[i] > y + 12) return goTo(stops[i]); }
+      else { for (i = stops.length - 1; i >= 0; i--) if (stops[i] < y - 12) return goTo(stops[i]); goTo(0); }
     });
     qsa('a[href^="#"]').forEach(function (a) {
       a.addEventListener('click', function (e) {
@@ -153,6 +179,98 @@
       report();
     }, { rootMargin: '-18% 0px -18% 0px', threshold: 0 });
     wides.forEach(function (el) { io.observe(el); });
+  }
+
+  /* 6b. Chuyển động gắn với cuộn (GSAP ScrollTrigger, scrub):
+     - trang đầu: tiêu đề phóng to bay qua camera, luận điểm hiện dưới khe hai ngón tay
+     - đoạn chuyển chương: hai dòng chữ trượt vào từ hai phía rồi phóng xuyên màn hình
+     - lá chớp phủ nền giấy trước chương bàn tay hữu hình
+     - tiêu đề mục: từng chữ trồi lên khỏi mặt nạ, số mục trôi chậm hơn nền */
+  function splitWords(el) {
+    if (!el || el.dataset.split) return [];
+    el.dataset.split = '1';
+    var out = [];
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach(function (p) {
+            if (!p) return;
+            if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var o = document.createElement('span'); o.className = 'w';
+            var i = document.createElement('span'); i.className = 'w__in'; i.textContent = p;
+            o.appendChild(i); frag.appendChild(o); out.push(i);
+          });
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1) walk(child);
+      });
+    })(el);
+    if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.textContent);
+    return out;
+  }
+
+  function initScrollMotion() {
+    var gsap = window.gsap, ST = window.ScrollTrigger;
+    if (!gsap || !ST || reduceMotion) return;
+
+    // trang đầu
+    var hero = qs('#hero');
+    if (hero) {
+      var tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom bottom', scrub: true } });
+      tl.to('.hero__cue', { autoAlpha: 0, duration: 0.05 }, 0)
+        .to('.hero__zoom', { scale: 3.2, duration: 0.3, ease: 'power2.in' }, 0.04)
+        .to('.hero__zoom', { autoAlpha: 0, duration: 0.2 }, 0.12)
+        .fromTo('.hero__sub', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.1, ease: 'power2.out' }, 0.64)
+        .to('.hero__sub', { autoAlpha: 0, y: -30, duration: 0.08 }, 0.92)
+        .to({}, { duration: 0.001 }, 1);
+    }
+
+    // đoạn chuyển chương
+    qsa('.interlude').forEach(function (block) {
+      var a = qs('.il--a', block), b = qs('.il--b', block), type = qs('.interlude__type', block), kicker = qs('.interlude__kicker', block);
+      var tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: block, start: 'top top', end: 'bottom bottom', scrub: true } });
+      tl.fromTo(a, { xPercent: -70, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, duration: 0.28, ease: 'power3.out' }, 0)
+        .fromTo(b, { xPercent: 70, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, duration: 0.28, ease: 'power3.out' }, 0.03)
+        .fromTo(type, { scale: 0.62 }, { scale: 1, duration: 0.3, ease: 'power2.out' }, 0)
+        .fromTo(kicker, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.12)
+        .to(kicker, { autoAlpha: 0, duration: 0.08 }, 0.46)
+        .to(type, { scale: 9, duration: 0.34, ease: 'power3.in' }, 0.46)
+        .to(type, { autoAlpha: 0, duration: 0.12 }, 0.66)
+        .to({}, { duration: 0.001 }, 1);
+
+      // lá chớp cho đoạn có đổi nền
+      if (block.dataset.themeTo === 'paper') {
+        var wipe = qs('#wipe'), bars = qsa('#wipe i');
+        if (!wipe || !bars.length) return;
+        var sw = parseFloat(block.dataset['switch'] || '0.74');
+        var wl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: block, start: 'top top', end: 'bottom bottom', scrub: true } });
+        wl.set(wipe, { visibility: 'visible' }, sw - 0.2)
+          .fromTo(bars, { scaleY: 0, transformOrigin: '50% 100%' }, { scaleY: 1, duration: 0.14, stagger: 0.012, ease: 'power2.inOut' }, sw - 0.2)
+          .to(bars, { autoAlpha: 0, duration: 0.06, stagger: 0.006 }, sw + 0.05)
+          .set(wipe, { visibility: 'hidden' }, sw + 0.16)
+          .to({}, { duration: 0.001 }, 1);
+      }
+    });
+
+    // tiêu đề mục: từng chữ trồi lên theo cuộn; số mục trôi chậm
+    qsa('.section__head').forEach(function (head) {
+      var words = splitWords(qs('.section__title', head));
+      if (words.length) {
+        gsap.fromTo(words, { yPercent: 115, rotate: 3 }, {
+          yPercent: 0, rotate: 0, duration: 1.05, ease: 'power4.out', stagger: 0.06,
+          scrollTrigger: { trigger: head, start: 'top 88%', toggleActions: 'play none none reverse' }
+        });
+      }
+      var num = qs('.section__num', head);
+      if (num) gsap.fromTo(num, { yPercent: 35 }, { yPercent: -35, ease: 'none', scrollTrigger: { trigger: head, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    qsa('.subhead').forEach(function (h) {
+      var words = splitWords(h);
+      if (words.length) gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: 'power3.out', stagger: 0.035, scrollTrigger: { trigger: h, start: 'top 92%', toggleActions: 'play none none reverse' } });
+    });
+
+    window.addEventListener('load', function () { ST.refresh(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ST.refresh(); });
   }
 
   /* 7. Câu chuyện ba hồi */
@@ -286,6 +404,7 @@
     safe(initMobileSheet);
     safe(initReveal);
     safe(initReadingMode);
+    safe(initScrollMotion);
     safe(initStory);
     safe(initSupplyDemand);
   });

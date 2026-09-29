@@ -16,7 +16,7 @@
 }
 </script>
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/style.css?v=20260929-f">
+<link rel="stylesheet" href="css/style.css?v=20260929-h">
 <noscript><style>.reveal{opacity:1!important;transform:none!important;filter:none!important}.reveal *{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
@@ -74,16 +74,20 @@
 <main>
  
 <!-- ============================== HERO ============================== -->
-<section class="hero" id="hero" data-theme="night" data-scene="hero">
- <p class="hero__eyebrow"><b>Báo cáo thảo luận CQ2</b><br>Học phần Kinh tế chính trị Mác – Lênin (SS008) — Nhóm 2</p>
- <h1 class="hero__title">Nền kinh tế thị trường hoàn hảo nên được vận hành bởi <span class="hand-inv">bàn tay vô hình</span> hay <span class="hand-vis">bàn tay hữu hình</span>?</h1>
- <p class="hero__sub">Luận điểm của nhóm: thị trường quyết định việc phân bổ nguồn lực qua giá cả, cung – cầu và cạnh tranh, trong khuôn khổ luật chơi và việc khắc phục khuyết tật do bàn tay hữu hình đảm nhiệm.</p>
- <div class="hero__meta">
-   <span><strong>Phạm vi giáo trình:</strong> Chương 2, mục II.2 và mục III (tr.61–81)</span>
- </div>
- <div class="hero__cue" aria-hidden="true">
+<section class="hero" id="hero" data-theme="night" data-stops="0,0.74">
+ <div class="hero__pin">
+  <div class="hero__zoom">
+   <p class="hero__eyebrow"><b>Báo cáo thảo luận CQ2</b><br>Học phần Kinh tế chính trị Mác – Lênin (SS008) — Nhóm 2</p>
+   <h1 class="hero__title">Nền kinh tế thị trường hoàn hảo nên được vận hành bởi <span class="hand-inv">bàn tay vô hình</span> hay <span class="hand-vis">bàn tay hữu hình</span>?</h1>
+   <div class="hero__meta">
+     <span><strong>Phạm vi giáo trình:</strong> Chương 2, mục II.2 và mục III (tr.61–81)</span>
+   </div>
+  </div>
+  <p class="hero__sub">Luận điểm của nhóm: thị trường quyết định việc phân bổ nguồn lực qua giá cả, cung – cầu và cạnh tranh, trong khuôn khổ luật chơi và việc khắc phục khuyết tật do bàn tay hữu hình đảm nhiệm.</p>
+  <div class="hero__cue" aria-hidden="true">
    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
    <span>Cuộn để bắt đầu</span>
+  </div>
  </div>
 </section>
  
@@ -182,6 +186,17 @@
  </div>
 </section>
  
+<!-- ============================== CHUYỂN CHƯƠNG 1 ============================== -->
+<section class="interlude" id="i1" data-theme="night" data-stops="0.4" data-nav="s3" aria-hidden="true">
+ <div class="interlude__pin">
+  <p class="interlude__kicker">Mục 3 – 4 · Thị trường</p>
+  <div class="interlude__type">
+   <span class="il il--a">Bàn tay</span>
+   <span class="il il--b il--inv">vô hình</span>
+  </div>
+ </div>
+</section>
+
 <!-- ============================== MỤC 3 ============================== -->
 <section class="section" id="s3" data-theme="night" data-hand="inv">
  <div class="section__inner">
@@ -406,6 +421,17 @@
  </div>
 </section>
  
+<!-- ============================== CHUYỂN CHƯƠNG 2 ============================== -->
+<section class="interlude" id="i2" data-theme="night" data-stops="0.4" data-nav="s5" data-theme-to="paper" data-switch="0.74" aria-hidden="true">
+ <div class="interlude__pin">
+  <p class="interlude__kicker">Mục 5 · Nhà nước</p>
+  <div class="interlude__type">
+   <span class="il il--a">Bàn tay</span>
+   <span class="il il--b il--vis">hữu hình</span>
+  </div>
+ </div>
+</section>
+
 <!-- ============================== MỤC 5 ============================== -->
 <section class="section" id="s5" data-theme="paper" data-hand="vis">
  <div class="section__inner">
@@ -546,6 +572,17 @@
  </div>
 </section>
  
+<!-- ============================== CHUYỂN CHƯƠNG 3 ============================== -->
+<section class="interlude" id="i3" data-theme="dusk" data-stops="0.4" data-nav="s7" aria-hidden="true">
+ <div class="interlude__pin">
+  <p class="interlude__kicker">Mục 7 · Trả lời CQ2</p>
+  <div class="interlude__type">
+   <span class="il il--a">Mỗi bàn tay</span>
+   <span class="il il--b il--both">một phần việc</span>
+  </div>
+ </div>
+</section>
+
 <!-- ============================== MỤC 7 ============================== -->
 <section class="section" id="s7" data-theme="dusk">
  <div class="section__inner">
@@ -720,15 +757,16 @@
  <span class="footer__credit">Mô hình bàn tay 3D © 2026 Emma L. D. Lieker, CC BY-NC 4.0</span>
 </footer>
  
+<div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="stage-labels" id="stage-labels" aria-hidden="true"></div>
 <svg class="stage-lines" id="stage-lines" aria-hidden="true"></svg>
 
 <script src="vendor/gsap/gsap.min.js"></script>
 <script src="vendor/gsap/ScrollTrigger.min.js"></script>
 <script src="vendor/lenis/lenis.min.js"></script>
-<script src="js/main.js?v=20260929-f"></script>
-<script src="js/quiz.js?v=20260929-f"></script>
-<script type="module" src="js/scene3d.js?v=20260929-f"></script>
+<script src="js/main.js?v=20260929-h"></script>
+<script src="js/quiz.js?v=20260929-h"></script>
+<script type="module" src="js/scene3d.js?v=20260929-h"></script>
 
 </body>
 </html>
