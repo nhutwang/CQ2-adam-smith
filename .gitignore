@@ -7,8 +7,9 @@ desktop.ini
 .vscode/
 .idea/
 
-# Thư viện giải nén từ node_modules.zip: trang đã dùng bản cục bộ trong ban-tay-web/vendor
+# Gói thư viện gốc: trang đã dùng bản cục bộ trong ban-tay-web/vendor nên không đưa lên repo
 node_modules/
+node_modules.zip
 
 # Tệp tạm
 *.log

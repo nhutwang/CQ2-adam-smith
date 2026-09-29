@@ -20,7 +20,7 @@ CẤU TRÚC
   js/quiz.js        Trắc nghiệm 5 câu
   models/hand-visible.glb    Bàn tay hữu hình (mô hình giải phẫu, texture đã nén, sửa vật liệu da)
   models/hand-invisible.glb  Bàn tay vô hình (cùng bộ 21 xương, hiển thị bằng hạt + viền sáng)
-  vendor/           three.js 0.186, GSAP 3.15, Lenis 1.3 (lấy từ node_modules.zip của nhóm)
+  vendor/           three.js 0.186, GSAP 3.15, Lenis 1.3 (bản cục bộ, không cần Internet)
 
 HỆ MÀU
 - Vô hình = ánh sáng lạnh (--inv), hữu hình = đất nung (--vis), đỏ (--danger) chỉ dùng cho khuyết tật.
