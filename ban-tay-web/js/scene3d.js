@@ -311,6 +311,7 @@ class ParticleSkin {
     this.tri = new Uint32Array(count * 3);
     this.bary = new Float32Array(count * 3);
     const bind = new Float32Array(count * 3), seed = new Float32Array(count), cluster = new Float32Array(count * 3), groupId = new Float32Array(count);
+    const fingerW = new Float32Array(count);
     // ba nhóm ngón ứng với ba chủ thể: ngón cái | trỏ + giữa | áp út + út
     const sk = mesh.skeleton;
     const skinIndex = geo.attributes.skinIndex, skinWeight = geo.attributes.skinWeight;
@@ -346,6 +347,15 @@ class ParticleSkin {
       const d = this.clusterDirs[g];
       cluster.set([d.x, d.y, d.z], p * 3);
       groupId[p] = g;
+      // mức "thuộc về ngón" lấy theo trọng số da: đốt ngón = 1, xương bàn = 0,35, lòng bàn tay = 0
+      // → vùng sáng chuyển mượt qua khớp, lòng bàn tay giữ nguyên nên bàn tay không có đường nứt
+      let fw = 0;
+      for (let k = 0; k < 4; k++) {
+        const wk = skinWeight.getComponent(i0, k); if (wk <= 0) continue;
+        const bn = sk.bones[skinIndex.getComponent(i0, k)].name;
+        if (group(bn) === g) fw += wk * (bn.endsWith('_meta') ? 0.35 : 1);
+      }
+      fingerW[p] = Math.min(1, fw);
     }
     this.geometry = new THREE.BufferGeometry();
     this.positions = new Float32Array(count * 3);
@@ -354,32 +364,33 @@ class ParticleSkin {
     this.geometry.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
     this.geometry.setAttribute('aCluster', new THREE.BufferAttribute(cluster, 3));
     this.geometry.setAttribute('aGroup', new THREE.BufferAttribute(groupId, 1));
+    this.geometry.setAttribute('aFinger', new THREE.BufferAttribute(fingerW, 1));
     this.material = new THREE.ShaderMaterial({
       uniforms: { ...uniforms, uMap: { value: sprite } },
       vertexShader: /* glsl */`
         uniform float uTime; uniform float uSize; uniform float uScatter; uniform float uLen;
         uniform vec3 uWrist; uniform vec3 uAxis; uniform float uHandLen; uniform float uFadeA; uniform float uFadeB; uniform float uPixelRatio;
         uniform vec3 uFocus; uniform float uFocusOn;
-        attribute vec3 aBind; attribute float aSeed; attribute vec3 aCluster; attribute float aGroup;
+        attribute vec3 aBind; attribute float aSeed; attribute float aGroup; attribute float aFinger;
         varying float vAlpha; varying float vSeed; varying float vFocus;
         ${NOISE_GLSL}
         void main() {
           vec3 p = position;
           float w = aGroup < 0.5 ? uFocus.x : (aGroup < 1.5 ? uFocus.y : uFocus.z);
-          // nhóm ngón được nhắc tới nhô lên nhẹ; bàn tay không bao giờ vỡ rời
-          p += aCluster * w * uFocusOn * uHandLen * 0.035;
+          // làm nổi nhóm ngón chỉ bằng ánh sáng: hạt nằm yên trên mặt da, bàn tay luôn liền một khối
+          float fo = uFocusOn * aFinger;
           vec3 jitter = vec3(vnoise(aBind * 3.0 / uLen + uTime * 0.9), vnoise(aBind * 3.0 / uLen + 11.0 + uTime * 0.8), vnoise(aBind * 3.0 / uLen + 23.0 + uTime * 1.1)) - 0.5;
-          p += jitter * uLen * (0.02 + uScatter * 0.55 + w * uFocusOn * 0.03);
+          p += jitter * uLen * (0.012 + uScatter * 0.12);
           float along = dot(aBind - uWrist, uAxis) / uHandLen;
           float fade = smoothstep(uFadeA, uFadeB, along);
           // phía cổ tay: hạt thưa dần và trôi ra xa như tan vào không khí — không có mép cắt
           p += uAxis * (1.0 - fade) * (0.3 + aSeed) * uHandLen * -0.18;
           vec4 mv = modelViewMatrix * vec4(p, 1.0);
           float tw = 0.65 + 0.35 * sin(uTime * (1.2 + aSeed * 2.0) + aSeed * 40.0);
-          vFocus = mix(1.0, mix(0.16, 2.4, w), uFocusOn);
+          vFocus = mix(1.0, mix(0.4, 2.8, w), fo);
           vAlpha = fade * tw * vFocus;
           vSeed = aSeed;
-          gl_PointSize = uSize * uPixelRatio * (0.6 + aSeed * 0.8) * (10.0 / -mv.z) * mix(1.0, 1.35, w * uFocusOn);
+          gl_PointSize = uSize * uPixelRatio * (0.6 + aSeed * 0.8) * (10.0 / -mv.z) * mix(1.0, 1.3, w * fo);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: /* glsl */`
@@ -479,22 +490,22 @@ const KEYS_SPEC = [
     vis: { ...DOWN_OUT, size: 0.6 }, inv: { ...UP_OUT, size: 0.6 }, g: { meet: 0, spark: 0 } },
   // mục 2 — bàn tay vô hình rủ từ trên xuống, khum trên phiên chợ
   { at: '#s2 .section__head', stage: true, hold: 0.2,
-    inv: { show: 1, x: 0.55, y: 1.16, size: 0.9, angle: 182, tilt: 24, roll: 190, fade: 0.5, dim: 0, pose: 'cup' },
+    inv: { show: 1, x: 0.55, y: 1.16, size: 0.9, angle: 182, tilt: 24, roll: -170, fade: 0.5, dim: 0, pose: 'cup' },
     vis: { show: 0, x: 0.7, y: -2.3, size: 0.8, angle: -6, tilt: 16, roll: 150, fade: 0.5, dim: 0.8, pose: 'reach' } },
   { at: '#s2 .story', line: 0.95, id: 'story', stage: true, hold: 0.7,
     inv: { x: 0.53, y: 1.1, size: 0.95 } },
   { at: '#s2 .prose', stage: true, inv: { ...UP_OUT } },
   // đoạn chữ lớn "Bàn tay vô hình": chữ bay qua, bàn tay vô hình rủ xuống từ trên cao
-  { at: '#i1', p: 0.45, abs: true, inv: { show: 0, x: 0, y: 2.4, size: 1.05, angle: 180, tilt: 8, roll: 190, fade: 0.25, pose: 'relax' } },
+  { at: '#i1', p: 0.45, abs: true, inv: { show: 0, x: 0, y: 2.4, size: 1.05, angle: 180, tilt: 8, roll: -170, fade: 0.25, pose: 'relax' } },
   { at: '#i1', p: 0.82, abs: true, hold: 0.3, inv: { show: 1, x: 0.02, y: 1.2, size: 1.08, pose: 'open' } },
   // mục 3 — bàn tay vô hình lớn ở nửa phải, rủ từ trên, nhãn ở đầu ngón
   { at: '#s3 .section__head', stage: true, hold: 0.25,
-    inv: { show: 1, x: 0.55, y: 1.14, size: 0.88, angle: 180, tilt: 12, roll: 190, fade: 0.3, pose: 'open' },
+    inv: { show: 1, x: 0.55, y: 1.14, size: 0.88, angle: 180, tilt: 12, roll: -170, fade: 0.3, pose: 'open' },
     labels: [['inv', 'thumb_dist', 'Tư lợi'], ['inv', 'index_dist', 'Cạnh tranh'], ['inv', 'midd_dist', 'Giá cả – tín hiệu']] },
   { at: '#s3 .pillars', stage: true, hold: 0.5, inv: { x: 0.56, y: 1.14, size: 0.88, angle: 182 },
     labels: [['inv', 'thumb_dist', 'Tư lợi'], ['inv', 'index_dist', 'Cạnh tranh'], ['inv', 'midd_dist', 'Giá cả – tín hiệu']] },
-  { at: '#s3 .subhead:nth-of-type(2)', stage: true, inv: { x: 0.62, y: 1.2, size: 0.92, angle: 174, tilt: 20, roll: 210, pose: 'relax' } },
-  { at: '#s3-laws', stage: true, hold: 0.5, inv: { x: 0.54, y: 1.14, size: 0.88, angle: 180, tilt: 12, roll: 190, pose: 'open' },
+  { at: '#s3 .subhead:nth-of-type(2)', stage: true, inv: { x: 0.62, y: 1.2, size: 0.92, angle: 174, tilt: 20, roll: -150, pose: 'relax' } },
+  { at: '#s3-laws', stage: true, hold: 0.5, inv: { x: 0.54, y: 1.14, size: 0.88, angle: 180, tilt: 12, roll: -170, pose: 'open' },
     labels: [['inv', 'index_dist', 'Quy luật giá trị'], ['inv', 'midd_dist', 'Cung – cầu'], ['inv', 'ring_dist', 'Cạnh tranh'], ['inv', 'pinky_dist', 'Lưu thông tiền tệ']] },
   // mục 4 — bàn tay nguyên vẹn; nhóm ngón của từng chủ thể sáng lên khi được nhắc tới
   { at: '#s4 .section__head', stage: true, hold: 0.3, inv: { x: 0.56, y: 1.14, size: 0.88, angle: 182, pose: 'open' }, g: { f0: 0, f1: 0, f2: 0 } },
@@ -513,8 +524,8 @@ const KEYS_SPEC = [
   { at: '#s5 .sd-widget', id: 'price', stage: true, hold: 0.6, vis: { x: 0.9, y: -1.15, size: 0.9, angle: 10, pose: 'cup' } },
   { at: '#s5 .subhead:nth-of-type(2)', stage: true, hold: 0.4, vis: { x: 0.62, y: -1.2, size: 0.95, angle: 0, pose: 'point' } },
   // mục 6 — nghị quyết về kinh tế tư nhân: bàn tay vô hình rủ xuống; kinh tế nhà nước: bàn tay hữu hình vươn lên
-  { at: '#s6 .section__head', stage: true, vis: { ...DOWN_OUT, x: 0.36 },
-    inv: { show: 0, x: 0.6, y: 2.3, size: 0.9, angle: 172, tilt: 20, roll: 190, fade: 0.55, dim: 0, pose: 'reach' } },
+  { at: '#s6 .section__head', stage: true, vis: { ...DOWN_OUT, x: 0.36, roll: 150 },
+    inv: { show: 0, x: 0.6, y: 2.3, size: 0.9, angle: 172, tilt: 20, roll: -170, fade: 0.55, dim: 0, pose: 'reach' } },
   { at: '#s6 .policy', stage: true, hold: 0.5, inv: { show: 1, x: 0.6, y: 1.12, size: 0.9 } },
   { at: '#s6 .policy--vis', stage: true, hold: 0.5, inv: { ...UP_OUT },
     vis: { show: 1, x: 0.36, y: -1.12, size: 0.9, angle: 8, tilt: 18, roll: 150, fade: 0.55, dim: 0.85, pose: 'reach' } },
@@ -972,7 +983,7 @@ function update() {
     visGhostUniforms.uOpacity.value = view.g.ghost * 0.9;
     const invShow = sInv.show * (onPaper ? 0 : 1) * (1 - r * 0.5) * (1 - sInv.dim * 0.5);
     invUniforms.uOpacity.value = invShow;
-    invGhostUniforms.uOpacity.value = invShow * (1 - 0.5 * view.scatter) * (1 - 0.55 * Math.max(view.g.f0, view.g.f1, view.g.f2));
+    invGhostUniforms.uOpacity.value = invShow * (1 - 0.5 * view.scatter) * (1 - 0.2 * Math.max(view.g.f0, view.g.f1, view.g.f2));
     invHand.holder.visible = invShow > 0.01;
     const inf = sInv.fade;
     invUniforms.uFadeA.value = lerp(-0.1, 0.0, inf);
