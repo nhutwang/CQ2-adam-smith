@@ -1,5 +1,6 @@
 BÀN TAY VÔ HÌNH / BÀN TAY HỮU HÌNH — Trang thuyết trình CQ2 (SS008, Nhóm 2)
 =========================================================================
+Phần giới thiệu đầy đủ kèm ảnh chụp nằm trong README.md ở thư mục gốc của repo.
 
 CÁCH MỞ (phải chạy qua HTTP server — không nháy đúp index.html)
 - Lý do: js/scene3d.js là ES module; mở bằng file:// thì trình duyệt chặn nên mất sân khấu 3D.
@@ -64,7 +65,7 @@ KHI THUYẾT TRÌNH
 - Phím ↑ / ↓ (hoặc PageUp / PageDown): chuyển giữa các mục và các điểm dừng của trang đầu,
   đoạn chữ lớn (luận điểm, lúc bàn tay hiện ra).
 - Mục 2: bấm "Hồi 1 / Hồi 2 / Hồi 3" — bàn tay 3D phản ứng theo từng hồi.
-- Mục 5: kéo chấm trên đồ thị để ấn định giá — giá càng thấp, bàn tay hữu hình càng nắm chặt.
+- Mục 5: kéo đường giá màu đỏ trên đồ thị — giá càng thấp, bàn tay hữu hình đứng cạnh khung càng nắm chặt.
 - Mục 7.2: cuộn chậm để thấy lớp da tan dần, lộ bàn tay vô hình bên trong.
 - In / xuất PDF: Ctrl + P.
 

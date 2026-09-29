@@ -521,7 +521,8 @@ const KEYS_SPEC = [
   { at: '#s5 .section__head', stage: true, hold: 0.3,
     vis: { show: 1, x: 0.56, y: -1.14, size: 0.88, angle: -2, tilt: 14, roll: 0, fade: 0.3, pose: 'flat' },
     labels: [['vis', 'thumb_dist', 'Pháp luật'], ['vis', 'index_dist', 'Chính sách'], ['vis', 'pinky_dist', 'Công cụ kinh tế']] },
-  { at: '#s5 .sd-widget', id: 'price', stage: true, hold: 0.6, vis: { x: 0.9, y: -1.15, size: 0.9, angle: 10, pose: 'cup' } },
+  // khung ấn định giá: bàn tay hữu hình đứng bên phải khung, ngón trỏ chỉ vào đường giá; kéo giá càng thấp, bàn tay càng nắm chặt và ấn xuống
+  { at: '#s5 .sd-widget', id: 'price', beside: '#s5 .sd-widget', stage: true, hold: 0.6, vis: { x: 0.8, y: -0.98, size: 0.72, angle: 18, tilt: 16, roll: 0, pose: 'point' } },
   { at: '#s5 .subhead:nth-of-type(2)', stage: true, hold: 0.4, vis: { x: 0.62, y: -1.2, size: 0.95, angle: 0, pose: 'point' } },
   // mục 6 — nghị quyết về kinh tế tư nhân: bàn tay vô hình rủ xuống; kinh tế nhà nước: bàn tay hữu hình vươn lên
   { at: '#s6 .section__head', stage: true, vis: { ...DOWN_OUT, x: 0.36, roll: 150 },
@@ -546,8 +547,9 @@ const KEYS_SPEC = [
   { at: '#s7 .subhead:nth-of-type(3)', abs: true, hold: 0.3,
     ...PAIR(0.6, 0.0, 0.62, 0.22, 0.2, { dim: 0.75, fade: 0.4 }, { fade: 0.4 }, { ghost: 0 }) },
   { at: '#s7 .discussion', abs: true, vis: { ...DOWN_OUT }, inv: { ...UP_OUT }, g: { meet: 0, spark: 0 } },
-  // trắc nghiệm — cặp chạm tay thu nhỏ khép lại cả trang
-  { at: '#quiz', abs: true, hold: 0.2, ...PAIR(0.74, 0.0, 0.42, 0.05, 0.6, { dim: 0.35 }) }
+  // tài liệu tham khảo trở xuống — cặp chạm tay lớn ở nửa phải khép lại cả trang
+  { at: '#s8 .subhead:nth-of-type(2)', abs: true, hold: 0.3, ...PAIR(0.6, 0.0, 0.62, 0.08, 0.5, { dim: 0.25 }) },
+  { at: '#quiz', abs: true, hold: 0.2, ...PAIR(0.6, 0.0, 0.66, 0.03, 0.9, { dim: 0.25 }) }
 ];
 
 /* hợp nhất: mỗi khóa đầy đủ thông số (kế thừa khóa trước) */
@@ -557,7 +559,7 @@ const KEYS = [];
   for (const spec of KEYS_SPEC) {
     const k = {
       at: spec.at, p: spec.p, line: spec.line ?? 0.55, hold: spec.hold ?? 0, id: spec.id || null,
-      stage: !!spec.stage && !spec.abs, labels: spec.labels || null,
+      stage: !!spec.stage && !spec.abs, labels: spec.labels || null, beside: spec.beside || null,
       inv: { ...prev.inv, ...(spec.inv || {}) }, vis: { ...prev.vis, ...(spec.vis || {}) }, g: { ...prev.g, ...(spec.g || {}) }
     };
     KEYS.push(k);
@@ -593,6 +595,12 @@ function measureKeys() {
     for (const side of ['inv', 'vis']) {
       const h = k[side];
       h.xa = k.stage ? stageL + h.x * (1 - stageL) : h.x;
+    }
+    // beside: đặt cổ tay giữa khoảng trống bên phải một khối rộng để bàn tay không nằm sau khối đó
+    const bes = k.beside && document.querySelector(k.beside);
+    if (bes) {
+      const right = bes.getBoundingClientRect().right;
+      k.vis.xa = ((right + (innerWidth - right) * 0.62) / innerWidth) * 2 - 1;
     }
   }
 }
@@ -900,7 +908,8 @@ function update() {
   }
   for (const key2 of G_KEYS) view.g[key2] = lerp(view.g[key2], target.g[key2], key2 === 'ghost' ? 1 - Math.exp(-dt * 8) : k);
   view.init = true;
-  view.reading = lerp(view.reading, overlay.reading, 1 - Math.exp(-dt * 3));
+  // ở khung ấn định giá, bàn tay là một phần của phần tương tác nên không bị làm mờ
+  view.reading = lerp(view.reading, A.id === 'price' ? 0 : overlay.reading, 1 - Math.exp(-dt * 3));
   view.scatter = lerp(view.scatter, actScatter, 1 - Math.exp(-dt * 2.5));
   view.squeeze = lerp(view.squeeze, squeezeT, 1 - Math.exp(-dt * 5));
   view.support = lerp(view.support, supportT, 1 - Math.exp(-dt * 4));
@@ -942,6 +951,7 @@ function update() {
 
   if (visHand && invHand) {
     const sInv = { ...view.inv }, sVis = { ...view.vis };
+    sVis.y -= view.squeeze * 0.14; sVis.angle += view.squeeze * 8;
     sVis.show *= smoothstep(0.25, 1, introE);
     sInv.show *= smoothstep(0, 0.7, introE);
 

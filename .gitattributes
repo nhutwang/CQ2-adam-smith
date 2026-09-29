@@ -1,0 +1,11 @@
+# Giữ nguyên CRLF cho tệp lệnh Windows, không để git chuyển đổi xuống dòng
+*.cmd -text
+*.bat -text
+
+# Tệp nhị phân: không so sánh theo dòng, không chuyển đổi
+*.glb   binary
+*.woff2 binary
+*.zip   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary

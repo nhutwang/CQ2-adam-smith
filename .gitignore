@@ -1,0 +1,16 @@
+# Tệp hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Thư mục riêng của trình soạn thảo
+.vscode/
+.idea/
+
+# Thư viện giải nén từ node_modules.zip: trang đã dùng bản cục bộ trong ban-tay-web/vendor
+node_modules/
+
+# Tệp tạm
+*.log
+*.tmp
+~$*

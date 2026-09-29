@@ -1,34 +1,188 @@
-# CQ2 — Bàn tay vô hình / Bàn tay hữu hình (SS008 — Nhóm 2)
+<div align="center">
 
-Trang thuyết trình tương tác 3D cho câu hỏi CQ2: *Nền kinh tế thị trường hoàn hảo nên được vận hành bởi "bàn tay vô hình" hay "bàn tay hữu hình"?* Hai bàn tay 3D có xương diễn theo từng mục khi cuộn: bàn tay vô hình là ánh sáng và hạt, bàn tay hữu hình là da thật; nền trang đổi theo bàn tay đang được nói tới.
+# Bàn tay vô hình hay bàn tay hữu hình?
 
-## Chạy trang
+**Trang thuyết trình tương tác 3D cho câu hỏi thảo luận CQ2**<br>
+Học phần Kinh tế chính trị Mác – Lênin (SS008) · Nhóm 2
 
-Nháy đúp `chay-web.cmd` (cần Python 3 hoặc Node.js). Trình duyệt tự mở `http://127.0.0.1:8080/index.html`. Không cần Internet: thư viện và phông chữ đã nằm sẵn trong `ban-tay-web/vendor` và `ban-tay-web/fonts`.
+<img src="docs/images/01-trang-dau.jpg" alt="Trang đầu: tiêu đề câu hỏi CQ2 bên trái, bàn tay vô hình rủ từ trên xuống và bàn tay hữu hình vươn từ dưới lên, hai ngón trỏ sắp chạm nhau" width="100%">
 
-Không nháy đúp trực tiếp `index.html`, vì trình duyệt chặn ES module khi mở bằng `file://`.
+![three.js 0.186](https://img.shields.io/badge/three.js-0.186-000000?logo=threedotjs&logoColor=white)
+![GSAP 3.15](https://img.shields.io/badge/GSAP-3.15%20%C2%B7%20ScrollTrigger-88CE02?logo=greensock&logoColor=black)
+![Lenis 1.3](https://img.shields.io/badge/Lenis-1.3-FF98A2)
+![Chạy không cần Internet](https://img.shields.io/badge/ch%E1%BA%A1y-kh%C3%B4ng%20c%E1%BA%A7n%20Internet-2ea44f)
+![HTML CSS JS thuần](https://img.shields.io/badge/HTML%20%C2%B7%20CSS%20%C2%B7%20JS-thu%E1%BA%A7n%2C%20kh%C3%B4ng%20c%E1%BA%A7n%20build-555555)
 
-## Cấu trúc
+</div>
 
-```text
-ktct-main/
-├── ban-tay-web/
-│   ├── index.html          Nội dung báo cáo
-│   ├── css/                style.css (hệ màu theo chương) + fonts.css
-│   ├── js/                 main.js, scene3d.js, poses.js, quiz.js
-│   ├── models/             hand-visible.glb, hand-invisible.glb
-│   ├── vendor/             three.js, GSAP, Lenis (cục bộ)
-│   ├── fonts/              Be Vietnam Pro, Newsreader (cục bộ)
-│   └── README.txt          Hướng dẫn kỹ thuật và cách tinh chỉnh bàn tay
-├── chay-web.cmd            Khởi động máy chủ cục bộ
-├── NOI_DUNG_THUYET_TRINH.txt
-└── README.md
+> *Nền kinh tế thị trường hoàn hảo nên được vận hành bởi "bàn tay vô hình" hay "bàn tay hữu hình"?*
+
+Đây là trang web nhóm dùng để trình bày câu trả lời cho CQ2 thay cho slide. Toàn bộ lập luận được kể bằng hai bàn tay 3D có xương thật. Bàn tay vô hình được dựng bằng hạt sáng và viền phát quang, tượng trưng cho cơ chế thị trường. Bàn tay hữu hình mang lớp da người, tượng trưng cho Nhà nước. Khi người xem cuộn trang, hai bàn tay đổi tư thế, đổi vị trí và phản ứng theo đúng đoạn nội dung đang được nói tới. Nền trang cũng đổi màu theo bàn tay đang giữ vai chính.
+
+Luận điểm của nhóm là: thị trường quyết định việc phân bổ nguồn lực qua giá cả, cung – cầu và cạnh tranh, trong khuôn khổ luật chơi; việc khắc phục khuyết tật của thị trường do bàn tay hữu hình đảm nhiệm. Vì vậy, hình ảnh xuyên suốt của trang là hai bàn tay vươn về phía nhau: bàn tay vô hình rủ từ trên xuống, bàn tay hữu hình vươn từ dưới lên, hai đầu ngón trỏ gặp nhau qua một khe sáng.
+
+## Mục lục
+
+- [Hình ảnh](#hình-ảnh)
+- [Mạch nội dung và vai diễn của hai bàn tay](#mạch-nội-dung-và-vai-diễn-của-hai-bàn-tay)
+- [Hiệu ứng nổi bật](#hiệu-ứng-nổi-bật)
+- [Chạy trang trên máy](#chạy-trang-trên-máy)
+- [Khi thuyết trình](#khi-thuyết-trình)
+- [Đăng trang lên GitHub Pages](#đăng-trang-lên-github-pages)
+- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+- [Tinh chỉnh bàn tay và hiệu ứng](#tinh-chỉnh-bàn-tay-và-hiệu-ứng)
+- [Công nghệ và hiệu năng](#công-nghệ-và-hiệu-năng)
+- [Ghi công](#ghi-công)
+
+## Hình ảnh
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/02-luan-diem.jpg" alt="Luận điểm của nhóm hiện ở cột trái khi hai ngón trỏ gần chạm nhau"><br><sub><b>Trang đầu.</b> Tiêu đề phóng to bay qua camera, hai bàn tay ra giữa màn hình và luận điểm hiện ra đúng lúc khe sáng lóe lên.</sub></td>
+    <td width="50%"><img src="docs/images/03-chu-lon-chuyen-chuong.jpg" alt="Đoạn chữ lớn Bàn tay vô hình"><br><sub><b>Đoạn chữ lớn chuyển chương.</b> Hai dòng chữ trượt vào từ hai phía rồi phóng to xuyên qua màn hình, bàn tay hiện ra phía sau.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/04-ban-tay-vo-hinh.jpg" alt="Bàn tay vô hình với nhãn Tư lợi, Cạnh tranh, Giá cả – tín hiệu ở đầu ngón"><br><sub><b>Mục 3.</b> Bàn tay vô hình rủ xuống, mỗi đầu ngón mang một động lực của thị trường.</sub></td>
+    <td><img src="docs/images/05-ba-chu-the.jpg" alt="Nhóm ngón của người tiêu dùng sáng lên"><br><sub><b>Mục 4.</b> Bàn tay giữ nguyên một khối, nhóm ngón của chủ thể đang được nhắc tới sáng lên.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/06-ban-tay-huu-hinh.jpg" alt="Bàn tay hữu hình trên nền giấy với nhãn Pháp luật, Chính sách, Công cụ kinh tế"><br><sub><b>Mục 5.</b> Lá chớp phủ nền giấy, bàn tay hữu hình vươn lên với ba công cụ của Nhà nước.</sub></td>
+    <td><img src="docs/images/07-an-dinh-gia.jpg" alt="Đồ thị cung cầu, giá bị ấn định thấp và bàn tay hữu hình nắm chặt"><br><sub><b>Đồ thị ấn định giá.</b> Kéo đường giá xuống thấp, thiếu hụt hiện ra và bàn tay hữu hình nắm chặt lại.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/08-moi-ban-tay-mot-phan-viec.jpg" alt="Hai ngón trỏ chạm nhau ở giữa màn hình"><br><sub><b>Mục 7.</b> "Mỗi bàn tay, một phần việc": hai ngón trỏ chạm nhau trước khi trả lời CQ2.</sub></td>
+    <td><img src="docs/images/09-trac-nghiem.jpg" alt="Trắc nghiệm năm câu bên cạnh cặp bàn tay lớn"><br><sub><b>Trắc nghiệm.</b> Năm câu hỏi có giải thích, cặp bàn tay chạm nhau khép lại cả trang.</sub></td>
+  </tr>
+</table>
+
+## Mạch nội dung và vai diễn của hai bàn tay
+
+Trang đi theo trình tự của một bài lập luận: đặt vấn đề, xây dựng ẩn dụ, trình bày lý luận về từng bàn tay, liên hệ thực tiễn rồi mới trả lời câu hỏi. Mỗi phần giao cho hai bàn tay một vai cụ thể để hình ảnh luôn phục vụ nội dung chứ không chỉ để trang trí.
+
+| Phần | Nội dung | Hai bàn tay làm gì |
+| --- | --- | --- |
+| Trang đầu | Câu hỏi CQ2 và luận điểm của nhóm | Chạm tay dọc; tiêu đề phóng to bay qua, luận điểm hiện khi khe sáng lóe lên |
+| 1. Đặt vấn đề | Thị trường hoàn hảo và hai cách vận hành | Vắng mặt, để người nghe tập trung vào chữ |
+| 2. Câu chuyện phiên chợ làng Hòa Thị | Ẩn dụ ba hồi xuyên suốt báo cáo | Bàn tay vô hình khum trên phiên chợ; Hồi 2 hạt rung và đổi màu; Hồi 3 bàn tay hữu hình vươn lên đỡ bên dưới |
+| Chữ lớn "Bàn tay vô hình" | Chuyển sang phần thị trường | Chữ bay qua, bàn tay vô hình rủ xuống từ trên cao |
+| 3. Bàn tay vô hình trong lý luận | Adam Smith, kinh tế thị trường theo giáo trình, các quy luật | Nhãn nằm ở đầu ngón: tư lợi, cạnh tranh, giá cả; rồi bốn quy luật |
+| 4. Ba chủ thể | Người sản xuất, người tiêu dùng, trung gian | Nhóm ngón của từng chủ thể sáng lên khi đoạn tương ứng được đọc |
+| Chữ lớn "Bàn tay hữu hình" | Chuyển sang phần Nhà nước | Lá chớp phủ nền giấy, bàn tay hữu hình vươn lên từ đáy |
+| 5. Nhà nước khi thị trường thất bại | Vai trò Nhà nước, khuyết tật thị trường | Nhãn Pháp luật, Chính sách, Công cụ kinh tế; đồ thị ấn định giá điều khiển độ nắm của bàn tay |
+| 6. Hai nghị quyết | Nghị quyết 68-NQ/TW và 79-NQ/TW | Mỗi nghị quyết một bàn tay: tư nhân đi với bàn tay vô hình, nhà nước đi với bàn tay hữu hình |
+| Chữ lớn "Mỗi bàn tay, một phần việc" | Chuyển sang câu trả lời | Hai ngón trỏ chạm nhau ở giữa màn hình |
+| 7. Trả lời CQ2 | So sánh, kết luận, phản biện, câu hỏi thảo luận | Ở 7.2 lớp da tan dần, lộ bàn tay vô hình nằm bên trong bàn tay hữu hình |
+| 8. Phạm vi và tài liệu tham khảo | Giới hạn của báo cáo, nguồn trích dẫn | Cặp chạm tay lớn ở nửa phải |
+| 9. Thử thách 5 câu | Trắc nghiệm có giải thích | Cặp chạm tay khép lại cả trang |
+
+## Hiệu ứng nổi bật
+
+Hai bàn tay tuân theo một ngôn ngữ chung: bàn tay vô hình luôn đến từ phía trên, bàn tay hữu hình luôn đến từ phía dưới. Nhờ quy ước này, người xem nhận ra bàn tay nào đang lên tiếng mà không cần chú thích, và khi hai bàn tay gặp nhau thì bố cục dọc tự nhiên gợi đến hình ảnh "Sáng tạo Adam".
+
+Để hai bàn tay có cảm giác như đang thật sự bị giữ trong trang web chứ không phải tượng đứng yên, mỗi khung hình được làm mượt theo quán tính. Trang kéo bàn tay theo nhịp cuộn rồi để nó đàn hồi về chỗ như có lò xo. Các ngón tay thở lệch pha nhau, và khi người xem dừng cuộn một lúc, bàn tay tự xòe ra như áp vào mặt kính màn hình. Cổ tay tan dần vào nền theo chiều dài thật của bàn tay nên không bao giờ lộ vết cắt của mô hình.
+
+Chữ cũng tham gia vào chuyển động. Tiêu đề trang đầu phóng to bay qua camera. Ba đoạn chữ lớn chuyển chương làm theo tinh thần của lenis.dev: chữ trượt vào, phóng to xuyên qua màn hình, rồi bàn tay hiện ra phía sau. Tiêu đề mỗi mục trồi lên từng chữ một lần, nên khi người thuyết trình dừng lại để nói, chữ không bị kẹt giữa chừng. Khi một bảng hoặc khối chữ rộng chiếm màn hình, bàn tay tự chìm tối để nhường chỗ cho nội dung.
+
+## Chạy trang trên máy
+
+Trang phải được mở qua một máy chủ HTTP. Nếu nháy đúp thẳng vào `index.html`, trình duyệt sẽ mở bằng `file://` và chặn ES module, khi đó sân khấu 3D không tải được. Trang không cần Internet vì thư viện, phông chữ và mô hình đều nằm sẵn trong thư mục `ban-tay-web`.
+
+**Cách 1, Windows, khuyên dùng.** Nháy đúp `chay-web.cmd` ở thư mục gốc. Tệp này tự tìm Python 3 hoặc Node.js, tự chọn cổng còn trống và mở trình duyệt tại `http://127.0.0.1:8080/index.html`. Muốn dùng cổng khác thì chạy `chay-web.cmd 9000`.
+
+**Cách 2, Python.**
+
+```bash
+cd ban-tay-web
+python -m http.server 8080 --bind 127.0.0.1
 ```
+
+Sau đó mở `http://127.0.0.1:8080/index.html`.
+
+**Cách 3, Node.js.**
+
+```bash
+npx serve ban-tay-web -l 8080
+```
+
+**Cách 4, VS Code.** Cài extension Live Server, chuột phải `ban-tay-web/index.html` rồi chọn *Open with Live Server*.
 
 ## Khi thuyết trình
 
-Dùng phím `↑` / `↓` để chuyển mục. Ở mục 2, bấm ba hồi của câu chuyện để bàn tay phản ứng. Ở mục 5, kéo chấm trên đồ thị để thấy bàn tay hữu hình nắm chặt khi giá bị ấn định. Ở mục 7.2, cuộn chậm để thấy lớp da tan dần, lộ bàn tay vô hình bên trong.
+| Thao tác | Tác dụng |
+| --- | --- |
+| `↓` `↑` hoặc `PageDown` `PageUp` | Chuyển đến điểm dừng kế tiếp: từng mục, luận điểm ở trang đầu, lúc bàn tay hiện ra sau đoạn chữ lớn |
+| Bấm *Hồi 1 / Hồi 2 / Hồi 3* ở mục 2 | Bàn tay 3D diễn theo từng hồi của câu chuyện |
+| Kéo đường giá màu đỏ ở mục 5 | Giá càng thấp, thiếu hụt càng lớn và bàn tay hữu hình càng nắm chặt |
+| Cuộn chậm ở mục 7.2 | Lớp da tan dần, lộ bàn tay vô hình bên trong |
+| `Ctrl` + `P` | In hoặc xuất PDF bản chữ, sân khấu 3D được ẩn đi |
+
+Trang tự đo tốc độ khung hình và giảm độ phân giải hoặc số hạt nếu máy chậm. Có thể ép mức chất lượng bằng tham số địa chỉ: `index.html?q=2` là đầy đủ, `?q=1` là vừa, `?q=0` là nhẹ nhất. Nên chạy thử trước trên chính máy sẽ chiếu. Nếu `?q=2` vẫn mượt thì dùng địa chỉ đó khi thuyết trình.
+
+## Đăng trang lên GitHub Pages
+
+Repo đã kèm sẵn quy trình `.github/workflows/pages.yml`. Mỗi lần đẩy thay đổi trong `ban-tay-web/` lên nhánh `main` hoặc `master`, GitHub sẽ tự đăng trang. Chỉ cần bật một lần:
+
+1. Vào repo trên GitHub, mở **Settings → Pages**.
+2. Ở mục **Build and deployment → Source**, chọn **GitHub Actions**.
+3. Đẩy một thay đổi bất kỳ, hoặc vào tab **Actions** chạy tay quy trình *Đăng trang lên GitHub Pages*.
+
+Trang sẽ có địa chỉ dạng `https://<tên-tài-khoản>.github.io/<tên-repo>/`. Ví dụ, repo `innguyen/ktct` sẽ có địa chỉ `https://innguyen.github.io/ktct/`. Nhờ vậy, cả lớp có thể mở trang bằng một đường link mà không phải cài gì.
+
+## Cấu trúc thư mục
+
+```text
+.
+├── .github/workflows/pages.yml   Tự đăng thư mục ban-tay-web lên GitHub Pages
+├── ban-tay-web/                  Toàn bộ trang web, chạy được độc lập
+│   ├── index.html                Nội dung báo cáo: trang đầu, 8 mục, 3 đoạn chữ lớn, trắc nghiệm
+│   ├── css/
+│   │   ├── style.css             Hệ màu theo chương, bố cục, hiệu ứng chữ, bản in
+│   │   └── fonts.css             Khai báo phông chữ cục bộ
+│   ├── js/
+│   │   ├── main.js               Cuộn mượt, đổi chủ đề, điều hướng bằng phím, chữ lớn, đồ thị cung – cầu
+│   │   ├── scene3d.js            Sân khấu 3D: hai bàn tay có xương, kịch bản theo cuộn, nhãn ở đầu ngón
+│   │   ├── poses.js              Thư viện tư thế bàn tay
+│   │   └── quiz.js               Trắc nghiệm 5 câu
+│   ├── models/                   hand-visible.glb, hand-invisible.glb
+│   ├── fonts/                    Be Vietnam Pro, Newsreader, Anton, Unbounded
+│   ├── vendor/                   three.js, GSAP, Lenis (bản cục bộ)
+│   └── README.txt                Ghi chú kỹ thuật ngắn khi mở thư mục trang
+├── docs/images/                  Ảnh chụp dùng trong README
+├── chay-web.cmd                  Khởi động máy chủ cục bộ trên Windows
+├── NOI_DUNG_THUYET_TRINH.txt     Nội dung thuyết trình dạng văn bản
+├── node_modules.zip              Gói thư viện gốc của nhóm, trang không cần tệp này để chạy
+└── README.md
+```
+
+## Tinh chỉnh bàn tay và hiệu ứng
+
+Toàn bộ vai diễn của hai bàn tay nằm trong mảng `KEYS_SPEC` của `ban-tay-web/js/scene3d.js`. Mỗi phần tử là một khóa neo vào một phần tử của trang, ví dụ `at: '#s3 .section__head'`. Khi người xem cuộn qua, trang nội suy mượt giữa hai khóa liên tiếp. Thông số nào không ghi thì kế thừa từ khóa trước, nên mỗi khóa chỉ cần mô tả điều thay đổi.
+
+| Thông số | Ý nghĩa |
+| --- | --- |
+| `show` | Hiện hoặc ẩn bàn tay, từ 0 đến 1 |
+| `x`, `y` | Vị trí cổ tay trên màn hình, từ -1 đến 1; `y = 1` là mép trên |
+| `size` | Chiều dài bàn tay so với nửa chiều cao màn hình |
+| `angle` | Hướng ngón tay: 0 là chỉ lên, 180 là chỉ xuống |
+| `tilt`, `roll` | Ngả ngón về phía người xem, xoay quanh trục cánh tay |
+| `dim`, `fade` | Chìm tối chỉ còn viền sáng; độ tan của cổ tay vào nền |
+| `pose` | Tư thế: `open`, `reach`, `relax`, `cup`, `flat`, `point`, `grip`, `fist`, `god`... |
+| `PAIR(mx, my, size, gap, spark)` | Dựng sẵn một cặp chạm tay dọc với điểm gặp tại `(mx, my)` |
+
+Mở Console của trình duyệt và gõ `__hands.KEYS` để xem hoặc thử giá trị trực tiếp khi trang đang chạy. Ghi chú kỹ thuật chi tiết hơn nằm trong `ban-tay-web/README.txt`.
+
+## Công nghệ và hiệu năng
+
+Trang viết bằng HTML, CSS và JavaScript thuần nên không cần bước build. Phần 3D dùng three.js 0.186 với hai mô hình GLB có chung bộ 21 xương. Bàn tay vô hình là một lớp hạt bám trên mặt da, được cập nhật theo xương ở mỗi khung hình, cộng với một lớp vỏ phát sáng theo hiệu ứng Fresnel. Bàn tay hữu hình dùng vật liệu da đã chỉnh lại, có chế độ chỉ còn viền sáng khi cần nhường chỗ cho chữ. Chuyển động chữ dùng GSAP 3.15 với ScrollTrigger, còn cuộn mượt dùng Lenis 1.3.
+
+Trang đã được thử trên laptop dùng card Intel Iris Xe ở khung 1366 × 768. Khi cuộn qua trang đầu và các đoạn chữ lớn, trang giữ khoảng 60 khung hình mỗi giây ở mức chất lượng cao nhất.
 
 ## Ghi công
 
-Mô hình bàn tay: *3D Rigged Hand Model* © 2026 Emma L. D. Lieker, giấy phép CC BY-NC 4.0, dùng cho mục đích học tập, đã chỉnh vật liệu và tư thế.
+- Mô hình bàn tay: *3D Rigged Hand Model* © 2026 Emma L. D. Lieker, giấy phép [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Mô hình được dùng cho mục đích học tập, không thương mại; nhóm đã chỉnh vật liệu và tư thế.
+- Thư viện: [three.js](https://threejs.org), [GSAP](https://gsap.com), [Lenis](https://lenis.dev).
+- Phông chữ: Be Vietnam Pro, Newsreader, Anton, Unbounded, lấy từ [Google Fonts](https://fonts.google.com).
+- Ý tưởng chuyển động chữ tham khảo từ [lenis.dev](https://lenis.dev).
+- Nội dung lý luận: Giáo trình Kinh tế chính trị Mác – Lênin, NXB Chính trị quốc gia Sự thật, 2021, Chương 2, trang 61–81. Danh mục đầy đủ nằm ở mục 8.2 của trang.
+
+<div align="center"><sub>SS008 · Nhóm 2 · Báo cáo thảo luận CQ2</sub></div>

@@ -1,0 +1,39 @@
+# Tự đăng thư mục ban-tay-web lên GitHub Pages mỗi khi trang thay đổi.
+# Bật một lần: Settings → Pages → Build and deployment → Source: GitHub Actions.
+name: Đăng trang lên GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'ban-tay-web/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Lấy mã nguồn
+        uses: actions/checkout@v4
+      - name: Cấu hình Pages
+        uses: actions/configure-pages@v5
+      - name: Đóng gói thư mục trang
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ban-tay-web
+      - name: Đăng trang
+        id: deployment
+        uses: actions/deploy-pages@v4
