@@ -34,7 +34,7 @@ canvas.setAttribute('aria-hidden', 'true');
 document.body.prepend(canvas);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
 renderer.setSize(innerWidth, innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -607,10 +607,14 @@ const clock = new THREE.Clock();
    2 = đầy đủ · 1 = giảm độ phân giải · 0 = giảm thêm hạt và tắt phát sáng
    có thể ép bằng ?q=0|1|2 trên thanh địa chỉ */
 const forcedQ = new URLSearchParams(location.search).get('q');
-const perf = { level: forcedQ != null ? Math.max(0, Math.min(2, Number(forcedQ))) : 2, locked: forcedQ != null, acc: 0, n: 0, since: 0 };
+const perf = { level: forcedQ != null ? Math.max(0, Math.min(2, Number(forcedQ))) : 2, locked: forcedQ != null, acc: 0, frames: [], slow: 0, since: 0 };
 function applyQuality() {
+  // hạn mức theo tổng số điểm ảnh, không theo tỷ lệ màn hình: laptop đặt 150% ở Full HD
+  // sẽ không phải vẽ 2880×1620 (đo trên Iris Xe: 27 fps → giới hạn này đưa về ~50 fps)
   const dpr = window.devicePixelRatio || 1;
-  const ratio = perf.level === 2 ? Math.min(dpr, 1.6) : perf.level === 1 ? Math.min(dpr, 1.1) : Math.min(dpr, 0.85);
+  const budget = [0.9e6, 1.4e6, 2.2e6][perf.level];
+  const fit = Math.sqrt(budget / Math.max(1, innerWidth * innerHeight));
+  const ratio = Math.max(0.6, Math.min(dpr, perf.level === 2 ? 1.6 : 1.2, fit));
   renderer.setPixelRatio(ratio);
   renderer.setSize(innerWidth, innerHeight);
   composer.setPixelRatio ? composer.setPixelRatio(ratio) : null;
@@ -623,12 +627,15 @@ function applyQuality() {
   document.body.dataset.quality = String(perf.level);
 }
 function trackPerf(dt, t) {
-  if (perf.locked || perf.level === 0 || t < 2 || document.hidden) return;
-  perf.acc += Math.min(dt, 0.5); perf.n++;
+  if (perf.locked || perf.level === 0 || t < 3 || document.hidden) return;
+  perf.acc += Math.min(dt, 0.5); perf.frames.push(dt);
   if (perf.acc < 2.5) return;            // đánh giá mỗi 2,5 giây, bất kể máy nhanh hay chậm
-  const avg = perf.acc / perf.n;
-  perf.acc = 0; perf.n = 0;
-  if (avg > 1 / 40) { perf.level -= 1; perf.since = t; applyQuality(); }
+  // trung vị: không bị vài khung khựng (biên dịch shader lần đầu) kéo xuống
+  const sorted = perf.frames.slice().sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  perf.acc = 0; perf.frames.length = 0;
+  perf.slow = median > 1 / 36 ? perf.slow + 1 : 0;
+  if (perf.slow >= 2) { perf.slow = 0; perf.level -= 1; perf.since = t; applyQuality(); }
 }
 
 /* con trỏ chuột: hai bàn tay nghiêng nhẹ, lệch chiều nhau để tạo chiều sâu */
